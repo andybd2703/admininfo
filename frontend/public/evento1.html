@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encabezado estilo SIDE TEAM</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+        .navbar-custom {
+        background-color: #004684; /* Azul oscuro similar */
+        }
+        .navbar-brand img {
+        height: 50px;
+        }
+        .btn-login {
+        background-color: transparent;
+        border: 1px solid white;
+        color: white;
+        }
+        .btn-login:hover {
+        background-color: white;
+        color: #004684;
+        }body {
+        background-color: #f0f0f0;
+        font-family: 'Segoe UI', sans-serif;
+        }
+        .custom-card {
+        background-color: #d9d9d9;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+        max-width: 1000px;
+        margin: 40px auto;
+        }
+        .event-image {
+        width: 100%;
+        border-radius: 15px;
+        }
+        .btn-custom {
+        background-color: #0d6efd;
+        color: white;
+        border-radius: 10px;
+        padding: 10px 30px;
+        }
+        .btn-custom:hover {
+        background-color: #0b5ed7;
+        }
+        .emoji-title {
+        color: #ff9900;
+        font-weight: bold;
+        font-size: 1.5rem;
+        }
+
+        .whatsapp-float {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        }
+        .whatsapp-float:hover {
+        transform: scale(1.1);
+        }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom px-3">
+    <div class="container-fluid">
+        <!-- Logo a la izquierda -->
+        <a class="navbar-brand" href="#">
+        <img src="img/logo.jpg" alt="Logo">
+        </a>
+
+        <!-- Íconos y botones a la derecha -->
+        <div class="d-flex align-items-center ms-auto">
+        <a href="#" class="text-white me-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-cart" viewBox="0 0 16 16">
+            <path d="M0 1a1 1 0 0 1 1-1h1.172a1 1 0 0 1 .97.757l.28 1.12L3.89 3H14a1 1 0 0 1 .96 1.276l-1.5 6A1 1 0 0 1 12.5 11H4a1 1 0 0 1-.96-.757L1.61 2.61 1.39 2H1a1 1 0 0 1-1-1zm3.14 3L4.5 10h8l1.2-4.8H4.28l-.14-.56z"/>
+            <circle cx="6" cy="13" r="1"/>
+            <circle cx="11" cy="13" r="1"/>
+            </svg>
+            <span class="ms-1 fw-bold">Registrarse</span>
+        </a>
+
+        <a href="#" class="btn btn-login fw-bold">Iniciar Sesión</a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container custom-card">
+        <div class="row g-4 align-items-center">
+        <!-- Imagen -->
+        <div class="col-md-6">
+            <img src="img/bebe.png" alt="Bebé feliz" class="event-image">
+        </div>
+    
+        <!-- Texto -->
+        <div class="col-md-6">
+            <h3 class="emoji-title text-center">🌟 KIDS FUN PARTY 🌟</h3>
+            <p class="text-danger fw-bold">🎉 ¡Diversión para los más pequeños! 🎈</p>
+            <p>Ven con tu familia a disfrutar de una tarde llena de juegos, música, actividades y muchas sorpresas en un ambiente seguro y divertido</p>
+            <p class="fw-bold mb-1">🎁 Actividades:</p>
+            <ul class="list-unstyled">
+            <li>✨ <strong>Show de magia</strong></li>
+            <li>🍭 <strong>Snacks y algodón de azúcar</strong></li>
+            <li>💕 <strong>Concursos y premios</strong></li>
+            <li>🛝 <strong>Juegos inflables</strong></li>
+            <li>🪩 <strong>Mini disco</strong></li>
+            </ul>
+            <div class="text-center mt-4">
+            <button class="btn btn-custom">Comprar</button>
+            </div>
+        </div>
+        </div>
+</div>
+
+<!-- Sección de información -->
+<div class="container mt-5">
+    <div class="row text-center text-md-start justify-content-center align-items-start g-4">
+    
+        <!-- Lugar mejorado -->
+<div class="col-md-3">
+  <div class="d-flex flex-column align-items-center text-center">
+    <img src="img/place_ico.png.webp" width="40" alt="Ubicación" class="mb-2">
+    <strong class="mt-2">Lugar del evento</strong>
+    <p class="mb-0">
+      <span class="fw-semibold">Bloque 4 - Piso 4</span><br>
+      Universidad Santiago de Cali<br>
+      <small class="text-muted">(Sede Pampalinda)</small>
+    </p>
+  </div>
+</div>
+
+    
+        <!-- Fecha -->
+        <div class="col-md-2">
+            <div class="d-flex flex-column align-items-center">
+            <img src="img/date_ico.png.webp" width="30" alt="Fecha">
+            <strong class="mt-2">Fecha:</strong>
+            <p class="mb-0">23 de mayo</p>
+            </div>
+        </div>
+    
+        <!-- Hora -->
+        <div class="col-md-2">
+            <div class="d-flex flex-column align-items-center">
+            <img src="img/hour_ico.png.webp" width="30" alt="Hora">
+            <strong class="mt-2">Hora:</strong>
+            <p class="mb-0">2:00pm</p>
+            </div>
+        </div>
+    
+        <!-- Apertura -->
+        <div class="col-md-2">
+            <div class="d-flex flex-column align-items-center">
+            <img src="img/door_ico.png.webp" width="30" alt="Apertura">
+            <strong class="mt-2">Apertura de salon</strong>
+            <p class="mb-0">12:00 pm</p>
+            </div>
+        </div>
+    
+
+        <!-- Edad mínima -->
+        <div class="col-md-3 d-flex justify-content-center">
+            <div class="text-center">
+            <img src="img/user_ico.png.webp" width="30" alt="Edad mínima">
+            <strong class="d-block mt-2">Edad mínima</strong>
+            <p class="mb-0">
+                <span class="fw-semibold">Desde 2 años</span><br>
+                Todo niño Debe estar acompañado de<br>
+                Un Adulto Responsable
+            </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Sección final de más información -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+        <div class="col-md-10 p-4 rounded d-flex align-items-start gap-4">
+            <span class="fw-bold text-primary">Más información</span>
+            <div>
+            <p class="mb-2 fs-5">
+                🎈<strong>¡Un día lleno de magia y diversión te espera!</strong>🎈
+            </p>
+            <p class="mb-0">
+                Ven con tu familia a disfrutar de una tarde llena de juegos, música, actividades y muchas sorpresas en un ambiente seguro y divertido.
+            </p>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Sección de plano -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+        <div class="col-md-10 d-flex align-items-start gap-3 flex-wrap">
+            <span class="fw-bold text-primary" style="min-width: 90px;">Plano</span>
+            <img src="img/n.jpg" alt="Plano del evento" class="img-fluid" style="max-width: 600px;">
+        </div>
+        </div>
+    </div>
+    
+
+    <!-- Sección de Localidades y Tarifas -->
+    <div class="container my-5">
+        <div class="row">
+        <div class="col-md-3">
+            <h5 class="fw-bold text-primary text-end pe-3">Localidades<br>y tarifas</h5>
+        </div>
+        <div class="col-md-9">
+            <table class="table table-borderless table-sm align-middle">
+            <thead class="border-bottom">
+                <tr class="fw-bold text-primary">
+                <th>Zona</th>
+                <th>Descripción</th>
+                <th>Precio + Servicio</th>
+                <th>Cupo Aprox.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td class="fw-bold text-primary">Zona General Familiar</td>
+                <td>Acceso a todas las actividades y tarima principal</td>
+                <td>$49.000 + $6.000</td>
+                <td>1.000</td>
+                </tr>
+                <tr>
+                <td class="fw-bold text-primary">Zona Familiar Preferencial</td>
+                <td>Espacio más cercano a la tarima, con mesas compartidas</td>
+                <td>$69.000 + $8.000</td>
+                <td>250</td>
+                </tr>
+                <tr>
+                <td class="fw-bold text-primary">Zona Mágica Infantil</td>
+                <td>Área exclusiva para niños con juegos y animadores</td>
+                <td>$59.000 + $7.000</td>
+                <td>300</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+
+    <!-- Sección de WhatsApp -->
+    <a href="https://api.whatsapp.com/send?phone=573207256230&text=Hola%2C%20quiero%20más%20información%20sobre%20los%20eventos" 
+        class="whatsapp-float" 
+        target="_blank" 
+        title="Chatea con nosotros en WhatsApp">
+        <img src="https://img.icons8.com/color/48/000000/whatsapp--v1.png" alt="WhatsApp" />
+    </a>
+
+    <!-- Sección de Información General -->
+    <div class="container my-5">
+        <div class="row">
+        <div class="col-md-3">
+            <h5 class="fw-bold text-primary text-end pe-3">Información<br>General</h5>
+        </div>
+        <div class="col-md-9">
+            <ul>
+            <li>El evento está diseñado para toda la familia, especialmente para niños de 3 a 12 años.</li>
+            <li>No hay sillas numeradas; el espacio es abierto con mesas compartidas y zonas de descanso.</li>
+            <li>Se recomienda llevar ropa cómoda y protección solar.</li>
+            <li>No se permite el ingreso de bebidas alcohólicas. Habrá zonas libres de alcohol supervisadas.</li>
+            <li>Todo menor debe asistir acompañado por un adulto responsable.</li>
+            </ul>
+        </div>
+        </div>
+    </div>
+    
+
+    <!-- Sección de Seguridad y Accesibilidad -->
+    <div class="container my-5">
+        <div class="row">
+        <div class="col-md-3">
+            <h5 class="fw-bold text-primary text-end pe-3">Seguridad<br>y Accesibilidad</h5>
+        </div>
+        <div class="col-md-9">
+            <ul>
+            <li>El evento contará con zonas de atención médica, puntos de hidratación y personal de seguridad.</li>
+            <li>Se dispondrá de accesos adecuados para personas con movilidad reducida.</li>
+            <li>Por motivos de seguridad, no se permitirá el ingreso de coches grandes o carpas.</li>
+            </ul>
+        </div>
+        </div>
+    </div>
+    
+    <!-- Mensaje Final -->
+    <div class="container my-5">
+        <div class="row">
+        <div class="col text-center">
+            <p class="fw-bold text-primary fs-5 mb-0">¡No te pierdas esta tarde llena de alegría, juegos, música y experiencias inolvidables!</p>
+            <p class="fw-bold text-primary fs-5">¡Prepárate para vivir un día mágico en familia!</p>
+        </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-primary text-white pt-5 pb-3">
+        <div class="container">
+            <div class="row text-center text-md-start align-items-start">
+    
+                <!-- Logo -->
+                <div class="col-md-2 mb-4 text-center">
+                    <img src="img/logo.jpg" alt="Logo SIDE TEAM" class="img-fluid" style="max-width: 120px;">
+                </div>
+    
+                <!-- SIDE USC info -->
+                <div class="col-md-2 mb-4">
+                    <h5 class="fw-bold">SIDE USC</h5>
+                    <p>📍 Servicios Integrales de Eventos</p>
+                    <p class="mb-0 fw-bold">Número de contacto</p>
+                    <p>+57 3207256230</p>
+                </div>
+    
+                <!-- Categorías -->
+                <div class="col-md-2 mb-4">
+                    <h5 class="fw-bold">Categorías</h5>
+                    <ul class="list-unstyled">
+                        <li>Conferencias</li>
+                        <li>Conciertos</li>
+                        <li>Deportes</li>
+                        <li>Culturales</li>
+                        <li>Académicos</li>
+                        <li>Empresariales</li>
+                    </ul>
+                </div>
+    
+                <!-- Ayuda -->
+                <div class="col-md-3 mb-4">
+                    <h5 class="fw-bold">Ayuda</h5>
+                    <ul class="list-unstyled">
+                        <li>Contáctanos</li>
+                        <li>Información de eventos</li>
+                        <li>Lugares y horarios</li>
+                        <li>Preguntas frecuentes</li>
+                    </ul>
+                </div>
+    
+                <!-- Legal -->
+                <div class="col-md-3 mb-4">
+                    <h5 class="fw-bold">Legal</h5>
+                    <ul class="list-unstyled">
+                        <li>Política de privacidad</li>
+                        <li>Términos y condiciones</li>
+                        <li>Protección de datos</li>
+                        <li>SIC</li>
+                    </ul>
+                </div>
+    
+            </div>
+        </div>
+    </footer>
+    
+   
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
