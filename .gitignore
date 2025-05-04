@@ -1,0 +1,21 @@
+# Node modules
+SIDE-backend/node_modules/
+SIDE-frontend/node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build files
+SIDE-frontend/dist/
+SIDE-backend/dist/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDEs y sistemas
+.vscode/
+.DS_Store
+Thumbs.db
