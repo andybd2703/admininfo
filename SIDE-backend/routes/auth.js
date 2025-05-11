@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Ruta de registro
 router.post('/register', async (req, res) => {
-  const { username, email, password, role = 'usuario' } = req.body;
+  const { username, email, password, firstName, lastName, birthdate, idNumber, phoneNumber, role = 'usuario' } = req.body;
 
   try {
     // Verificar si el usuario ya existe
@@ -15,18 +15,23 @@ router.post('/register', async (req, res) => {
     }
 
     // Crear el nuevo usuario (se hace el hashing dentro del método create)
-    const result = await User.create(username, email, password, role);
+    const result = await User.create(username, email, password, firstName, lastName, birthdate, idNumber, phoneNumber, role);
 
     const newUser = {
       id: result.insertId,
       username,
       email,
+      firstName,
+      lastName,
+      birthdate,
+      idNumber,
+      phoneNumber,
       role
     };
 
     // Generar el token para el nuevo usuario
     const token = User.generateToken(newUser);
-    res.status(201).json({ message: 'Usuario registrado', token });
+    res.status(201).json({ message: 'Usuario registrado', token, usuario: newUser });
   } catch (err) {
     res.status(500).json({ message: 'Error al registrar usuario', error: err.message });
   }
@@ -51,7 +56,7 @@ router.post('/login', async (req, res) => {
 
     // Generar el token si la contraseña es correcta
     const token = User.generateToken(user);
-    res.json({ message: 'Inicio de sesión exitoso', token });
+    res.json({ message: 'Inicio de sesión exitoso', token, usuario: user });
   } catch (err) {
     res.status(500).json({ message: 'Error al iniciar sesión', error: err.message });
   }

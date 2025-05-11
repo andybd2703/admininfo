@@ -4,7 +4,7 @@ const getDB = require('../config/db'); // Función para obtener la conexión a l
 
 class User {
   // Método para crear un nuevo usuario
-  static async create(username, email, password, role = 'usuario') {
+  static async create(username, email, password, firstName, lastName, birthdate, idNumber, phoneNumber, role = 'usuario') {
     const db = await getDB();
 
     // Verifica si ya existe un usuario con el mismo correo
@@ -17,8 +17,9 @@ class User {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Inserta el nuevo usuario en la base de datos
-    const query = `INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)`;
-    const [result] = await db.query(query, [username, email, hashedPassword, role]);
+    const query = `INSERT INTO users (username, email, password, first_name, last_name, birthdate, id_number, phone_number, role) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const [result] = await db.query(query, [username, email, hashedPassword, firstName, lastName, birthdate, idNumber, phoneNumber, role]);
     return result;
   }
 

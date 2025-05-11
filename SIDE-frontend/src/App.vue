@@ -1,62 +1,163 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <router-link to="/" class="navbar-brand">Eventos Universidad</router-link>
-      <!-- Botón para dispositivos pequeños -->
-      <button 
-        class="navbar-toggler" 
-        type="button" 
-        data-bs-toggle="collapse" 
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav" 
-        aria-expanded="false" 
-        aria-label="Menú de navegación">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <!-- Menú de navegación -->
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <router-link to="/registro" class="nav-link">Registro</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/login" class="nav-link">Iniciar Sesión</router-link>
-          </li>
-        </ul>
+  <div id="app">
+    <header class="navbar" v-if="mostrarNavbar">
+      <div class="navbar-content">
+        <img src="https://i.imgur.com/hKU4GaP.png" alt="Logo" class="logo" />
+        <nav class="menu">
+          <router-link to="/" class="menu-item">Inicio</router-link>
+          <router-link to="/eventos" class="menu-item">Eventos</router-link>
+          <router-link to="/contacto" class="menu-item">Contáctanos</router-link>
+          <router-link to="/cart" class="menu-item">Carrito</router-link> <!-- NUEVO -->
+        </nav>
+        <div class="auth-buttons">
+          <!-- Si el usuario está logueado, mostramos su nombre y un botón para cerrar sesión -->
+          <template v-if="nombreUsuario">
+            <span style="font-weight: bold;">Hola, {{ nombreUsuario }} 👋</span>
+            <button @click="cerrarSesion" class="auth-button">
+              <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+            </button>
+          </template>
+          <!-- Si no, mostramos los botones de login y registro -->
+          <template v-else>
+            <router-link to="/login" class="auth-button">
+              <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </router-link>
+            <router-link to="/registro" class="auth-button">
+              <i class="fas fa-user-plus"></i> Registrarse
+            </router-link>
+          </template>
+        </div>
       </div>
-    </div>
-  </nav>
-
-  <!-- Mostrar categorías solo si NO estamos en /registro o /login -->
-  <router-view></router-view>
+    </header>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, ref,  onMounted, onBeforeUnmount } from 'vue';
 import { useRoute } from 'vue-router';
+import emitter from '@/eventBus';
 
 export default {
   name: 'App',
   setup() {
     const route = useRoute();
-
-    // Ocultar categorías en /registro y /login
-    const mostrarCategorias = computed(() => {
-      return !['/registro', '/login'].includes(route.path);
+    const mostrarNavbar = computed(() => {
+      return !['/registro', '/login', '/recuperar-contrasena'].includes(route.path);
     });
 
-    return { mostrarCategorias };
+    const nombreUsuario = ref(null);
+
+    function actualizarUsuario() {
+      const token = localStorage.getItem('token');
+      const nombreGuardado = localStorage.getItem('usuario');
+      if (token && nombreGuardado) {
+        nombreUsuario.value = nombreGuardado;
+      } else {
+        nombreUsuario.value = null;
+      }
+    }
+
+    onMounted(() => {
+      emitter.on('auth-change', actualizarUsuario);
+      actualizarUsuario(); // Lo llamamos una vez al inicio
+    });
+
+    onBeforeUnmount(() => {
+      emitter.off('auth-change', actualizarUsuario);
+    });
+
+    function cerrarSesion() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+      nombreUsuario.value = null;
+      emitter.emit('auth-change');
+      window.location.href = '/login';
+    }
+
+    return { mostrarNavbar, nombreUsuario, cerrarSesion };
   }
 };
 </script>
-
 <style>
+/* Estilos generales */
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 0;
+}
+
+/* Barra de navegación */
+.navbar {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  padding: 15px 20px;
+}
+
+/* Contenedor de la barra */
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Logo */
+.logo {
+  height: 50px;
+  margin-right: 20px;
+}
+
+/* Menú de navegación */
+.menu {
+  display: flex;
+  gap: 15px;
+  margin-right: auto;
+}
+
+.menu-item {
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+  transition: color 0.3s, background-color 0.3s;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.menu-item:hover {
+  color: #007bff;
+  background-color: #e9ecef;
+}
+
+/* Botones de autenticación */
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.auth-button {
+  text-decoration: none;
+  color: #fff;
+  background: #173788;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.auth-button:hover {
+  transform: scale(1.05);
+  background: #12275d;
 }
 </style>
