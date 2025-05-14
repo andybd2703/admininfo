@@ -9,6 +9,14 @@
           <h1 class="section-title">{{ evento.nombre }}</h1>
           <p class="event-description">{{ evento.descripcion }}</p>
           <button class="buy-tickets-button">Comprar Entradas</button>
+          
+          <div class="extra-buttons">
+            <button class="cart-button" @click="agregarAlCarrito">🛒 Agregar al carrito</button>
+            <button @click="toggleFavorito">
+            {{ esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos' }}
+          </button>
+          </div>
+          
           <div class="quick-info">
             <div class="info-item">
               <p class="info-text"> Arena USC </p>
@@ -102,38 +110,103 @@
 
 <script>
 import axios from 'axios';
-import { format } from 'date-fns'; // Importamos la librería
+import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export default {
   data() {
     return {
-      evento: {} // Aquí almacenamos los datos del evento
+      evento: {},
+      esFavorito: false, // nuevo estado
+      carrito: []        // nuevo estado
     };
   },
   computed: {
-    // Computada para formatear la fecha
     formattedFecha() {
-      return this.evento.fecha ? format(new Date(this.evento.fecha), 'dd MMMM yyyy', { locale: es }) : ''; 
+      return this.evento.fecha ? format(new Date(this.evento.fecha), 'dd MMMM yyyy', { locale: es }) : '';
     }
   },
   created() {
-    const eventoId = this.$route.params.id; // Suponiendo que el ID del evento es parte de la URL
+    const eventoId = this.$route.params.id;
     this.obtenerEvento(eventoId);
+    this.verificarFavorito(eventoId);
   },
   methods: {
-    async obtenerEvento(id) {
-      try {
-        const response = await axios.get(`http://localhost:3000/api/events/${id}`); // Aquí haces la solicitud a tu API
-        this.evento = response.data;
-        console.log("🎯 Evento cargado:", this.evento);
-      } catch (error) {
-        console.error("❌ Error al obtener el evento:", error);
-      }
-    }
+  async obtenerEvento(id) {
+  try {
+    const response = await axios.get(`http://localhost:3000/api/events/${id}`);
+    this.evento = response.data;
+    console.log(" Evento cargado:", this.evento);
+
+    // 👇 Llamamos a verificarFavorito solo después de tener el evento
+    this.verificarFavorito();
+  } catch (error) {
+    console.error(" Error al obtener el evento:", error);
   }
+}
+,
+
+  // Función para alternar el estado de favorito con el backend
+  async toggleFavorito() {
+  try {
+    const usuarioId = localStorage.getItem('userId'); // Asegúrate de obtener el ID del usuario correctamente
+    const eventoId = this.evento.id;
+
+    if (this.esFavorito) {
+      // Si es favorito, eliminamos
+      await axios.delete('http://localhost:3000/api/favoritos/remove', {
+        data: {
+          usuario_id: usuarioId,  // Usamos el ID del usuario
+          evento_id: eventoId      // Usamos el ID del evento
+        }
+      });
+    } else {
+      // Si no es favorito, lo agregamos
+      await axios.post('http://localhost:3000/api/favoritos/add', {
+        usuario_id: usuarioId,
+        evento_id: eventoId
+      });
+    }
+
+    // Cambiar el estado local de favorito
+    this.esFavorito = !this.esFavorito; 
+  } catch (error) {
+    console.error(" Error al actualizar favorito:", error);
+  }
+},
+
+
+  // Verificar si el evento ya es favorito llamando al backend
+ // Verificar si el evento es favorito
+async verificarFavorito() {
+  try {
+    const usuarioId = localStorage.getItem('userId'); // Asegúrate de obtener el ID del usuario correctamente
+    const eventoId = this.evento.id;
+    const response = await axios.get(`http://localhost:3000/api/favoritos/verificar/${usuarioId}/${eventoId}`);
+    this.esFavorito = response.data.isFavorito;
+  } catch (error) {
+    console.error(" Error al verificar si es favorito:", error);
+  }
+},
+
+
+  // Agregar al carrito
+  agregarAlCarrito() {
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    carrito.push({
+      id: this.evento.id,
+      nombre: this.evento.nombre,
+      precio: this.evento.precio_general_full
+    });
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    alert(" ¡Agregado al carrito!");
+  }
+}
+
+
 };
 </script>
+
 
 <style scoped>
 /* Estilos generales */
@@ -371,4 +444,37 @@ export default {
   max-width: 720px;
   width: 100%;
 }
+.extra-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cart-button,
+.favorites-button {
+  background-color: #ffc107;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.cart-button:hover {
+  background-color: #e0a800;
+}
+
+.favorites-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.favorites-button:hover {
+  background-color: #c82333;
+}
+
 </style>

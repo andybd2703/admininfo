@@ -5,7 +5,7 @@
     </div>
 
     <div class="event-section">
-      <h2 class="section-title">Bienvenido a <strong>SIDE TEAM</strong> 🎉</h2>
+      <h2 class="section-title">Bienvenido a <strong>SIDE TEAM</strong> </h2>
       <p class="section-subtitle">Explora nuestros eventos y encuentra el que más te gusta:</p>
 
       <div class="row justify-content-center">

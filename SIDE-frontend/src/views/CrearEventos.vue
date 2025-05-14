@@ -115,7 +115,8 @@ export default {
     async submitEvent() {
       try {
         const formData = new FormData();
-
+        const usuario_id = localStorage.getItem('userId');
+        console.log('usuario_id:', usuario_id);
         // Agregar los datos del evento
         formData.append('nombre', this.event.name);
         formData.append('descripcion', this.event.description);
@@ -128,7 +129,7 @@ export default {
         formData.append('precio_general_full', this.event.tickets.general.full_price);
         formData.append('vender_comida', this.event.faq[0].answer ? 1 : 0);
         formData.append('vender_bebidas_alcoholicas', this.event.faq[1].answer ? 1 : 0);
-
+        formData.append('usuario_id', usuario_id);
         if (this.event.image) {
           formData.append('imagen', this.event.image); // Adjuntar la imagen
         }

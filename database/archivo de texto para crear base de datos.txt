@@ -1,0 +1,55 @@
+-- copiar y pegar esto en MySQL workbench
+
+
+CREATE DATABASE IF NOT EXISTS side_db;
+USE side_db;
+
+-- Eliminar primero las tablas que tienen foreign keys
+DROP TABLE IF EXISTS favoritos;
+DROP TABLE IF EXISTS eventos;
+DROP TABLE IF EXISTS users;
+
+-- Tabla de usuarios
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL UNIQUE,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  birthdate DATE NOT NULL,
+  id_number VARCHAR(50) NOT NULL UNIQUE,
+  phone_number VARCHAR(20) NOT NULL,
+  role ENUM('admin', 'usuario', 'organizador') NOT NULL DEFAULT 'usuario',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de eventos
+CREATE TABLE eventos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL,
+  descripcion TEXT,
+  imagen VARCHAR(255),
+  fecha DATE NOT NULL,
+  hora TIME NOT NULL,
+  edad_minima INT NOT NULL,
+  precio_platino_full DECIMAL(10, 2) NOT NULL,
+  precio_vip_full DECIMAL(10, 2) NOT NULL,
+  precio_general_full DECIMAL(10, 2) NOT NULL,
+  vender_comida BOOLEAN NOT NULL,
+  vender_bebidas_alcoholicas BOOLEAN NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  usuario_id INT NOT NULL,
+  FOREIGN KEY (usuario_id) REFERENCES users(id)
+);
+
+-- Tabla de favoritos
+CREATE TABLE favoritos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  evento_id INT NOT NULL,
+  UNIQUE(usuario_id, evento_id),
+  FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (evento_id) REFERENCES eventos(id) ON DELETE CASCADE
+);

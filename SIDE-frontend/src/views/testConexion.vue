@@ -1,7 +1,7 @@
 <template>
     <div>
       <h1>Conexión al backend</h1>
-      <p v-if="mensaje">✅ Conectado: {{ mensaje }}</p>
+      <p v-if="mensaje">Conectado: {{ mensaje }}</p>
       <p v-else>⏳ Esperando respuesta...</p>
     </div>
   </template>
@@ -21,7 +21,7 @@
           this.mensaje = res.data.message;
         })
         .catch(err => {
-          console.error('❌ Error al conectar con backend:', err);
+          console.error('Error al conectar con backend:', err);
         });
     }
   };

@@ -52,7 +52,10 @@
 
         <div class="register-link">
           ¿No tiene una cuenta?
-          <a href="#" class="register-button">Regístrese</a>
+          <router-link to="/registro" class="register-button">
+            registrese
+          </router-link>
+          
         </div>
       </form>
     </div>
@@ -85,6 +88,9 @@ export default {
         // Si la solicitud es exitosa, almacenamos el token en localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('usuario', response.data.usuario.username);
+        localStorage.setItem('rol', response.data.usuario.role);
+        localStorage.setItem('userId', response.data.usuario.id);
+        console.log(localStorage.getItem('userId'));
         emitter.emit('auth-change');
         // Limpiamos los campos del formulario
         this.usuario = { email: '', password: '' };

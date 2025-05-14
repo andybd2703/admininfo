@@ -10,10 +10,10 @@ const createConnection = async () => {
       password: '1234',
       database: 'side_db'
     });
-    console.log('✅ Conectado a la base de datos MySQL');
+    console.log('Conectado a la base de datos MySQL');
     return connection;
   } catch (err) {
-    console.error('❌ Error de conexión a MySQL:', err.message);
+    console.error('Error de conexión a MySQL:', err.message);
     throw err;
   }
 };

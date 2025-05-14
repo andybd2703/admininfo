@@ -11,6 +11,8 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const eventosRoutes = require('./routes/events');
 const usuariosRoutes = require('./routes/usuarios');
+const favoritosRoutes = require('./routes/favoritos');
+
 const db = require('./config/db');
 
 // ─────────────────────────────────────────────────────────────
@@ -71,6 +73,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventosRoutes);
 app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/favoritos', favoritosRoutes);
 
 // Ruta de prueba simple
 app.get('/api/ping', (req, res) => {
@@ -86,6 +89,14 @@ app.get('/api/usuarios', async (req, res) => {
     console.error('Error al obtener usuarios:', err);
     res.status(500).json({ error: 'Error al obtener usuarios' });
   }
+});
+
+// ─────────────────────────────────────────────────────────────
+// MIDDLEWARE DE MANEJO DE ERRORES
+// ─────────────────────────────────────────────────────────────
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ message: 'Ocurrió un error en el servidor' });
 });
 
 // ─────────────────────────────────────────────────────────────

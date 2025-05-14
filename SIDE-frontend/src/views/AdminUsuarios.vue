@@ -33,7 +33,7 @@
       <form @submit.prevent="guardarEdicion">
         <div class="mb-4">
           <label for="nombre" class="block">Nombre:</label>
-          <input type="text" v-model="usuarioEdicion.nombre" id="nombre" class="w-full p-2 border border-gray-300 rounded" required />
+          <input type="text" v-model="usuarioEdicion.username" id="nombre" class="w-full p-2 border border-gray-300 rounded" required />
         </div>
         <div class="mb-4">
           <label for="email" class="block">Correo:</label>
@@ -61,7 +61,7 @@
         </div>
         <div class="mb-4">
           <label for="rol" class="block">Rol:</label>
-          <select v-model="usuarioEdicion.rol" id="rol" class="w-full p-2 border border-gray-300 rounded" required>
+          <select v-model="usuarioEdicion.role" id="rol" class="w-full p-2 border border-gray-300 rounded" required>
             <option value="admin">Admin</option>
             <option value="usuario">Usuario</option>
             <option value="organizador">Organizador</option>
@@ -116,20 +116,33 @@ export default {
       this.usuarioEdicion = { ...usuario }; // Copiar los datos del usuario a editar
     },
     async guardarEdicion() {
-      try {
-        
-        await axios.put(`http://localhost:3000/api/usuarios/${this.usuarioEdicion.id}`);
-        // Actualizar el usuario en la lista
-        const index = this.usuarios.findIndex(u => u.id === this.usuarioEdicion.id);
-        if (index !== -1) {
-          this.usuarios.splice(index, 1, this.usuarioEdicion);
+  try {
+    const token = localStorage.getItem('token');
+
+    await axios.put(
+      `http://localhost:3000/api/usuarios/${this.usuarioEdicion.id}`,
+      this.usuarioEdicion, //  Aquí van los datos a guardar
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-        this.usuarioEdicion = null; // Limpiar formulario después de guardar
-      } catch (error) {
-        console.error('Error al guardar la edición:', error);
-        alert('No se pudieron guardar los cambios.');
       }
-    },
+    );
+
+    // Actualizar el usuario en la lista
+    const index = this.usuarios.findIndex(u => u.id === this.usuarioEdicion.id);
+    if (index !== -1) {
+      this.usuarios.splice(index, 1, this.usuarioEdicion);
+    }
+
+    this.usuarioEdicion = null; // Limpiar el formulario después de guardar
+
+  } catch (error) {
+    console.error('Error al guardar la edición:', error);
+    alert('No se pudieron guardar los cambios.');
+  }
+},
     cancelarEdicion() {
       this.usuarioEdicion = null; // Limpiar el formulario de edición
     }

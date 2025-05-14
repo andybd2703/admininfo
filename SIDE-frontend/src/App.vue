@@ -7,16 +7,31 @@
           <router-link to="/" class="menu-item">Inicio</router-link>
           <router-link to="/eventos" class="menu-item">Eventos</router-link>
           <router-link to="/contacto" class="menu-item">Contáctanos</router-link>
-          <router-link to="/cart" class="menu-item">Carrito</router-link> <!-- NUEVO -->
+          <router-link to="/cart" class="menu-item">Carrito</router-link>
         </nav>
         <div class="auth-buttons">
           <!-- Si el usuario está logueado, mostramos su nombre y un botón para cerrar sesión -->
           <template v-if="nombreUsuario">
             <span style="font-weight: bold;">Hola, {{ nombreUsuario }} 👋</span>
+            
+            <!-- Botón Admin solo si el usuario tiene el rol 'admin' -->
+            <template v-if="rolUsuario === 'admin' || rolUsuario === 'organizador'">
+              <router-link to="/organizador-home" class="auth-button">
+                <i class="fas fa-calendar-plus"></i> Crear Evento
+              </router-link>
+            </template>
+
+            <template v-if="rolUsuario === 'admin'">
+              <router-link to="/admin" class="auth-button">
+                <i class="fas fa-cogs"></i> Admin
+              </router-link>
+            </template>
+            
             <button @click="cerrarSesion" class="auth-button">
               <i class="fas fa-sign-out-alt"></i> Cerrar sesión
             </button>
           </template>
+          
           <!-- Si no, mostramos los botones de login y registro -->
           <template v-else>
             <router-link to="/login" class="auth-button">
@@ -34,7 +49,7 @@
 </template>
 
 <script>
-import { computed, ref,  onMounted, onBeforeUnmount } from 'vue';
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute } from 'vue-router';
 import emitter from '@/eventBus';
 
@@ -47,20 +62,25 @@ export default {
     });
 
     const nombreUsuario = ref(null);
+    const rolUsuario = ref(null); // Variable para almacenar el rol del usuario
 
     function actualizarUsuario() {
       const token = localStorage.getItem('token');
       const nombreGuardado = localStorage.getItem('usuario');
+      const rolGuardado = localStorage.getItem('rol'); // Suponiendo que el rol está en localStorage
+
       if (token && nombreGuardado) {
         nombreUsuario.value = nombreGuardado;
+        rolUsuario.value = rolGuardado; // Asignar el rol
       } else {
         nombreUsuario.value = null;
+        rolUsuario.value = null;
       }
     }
 
     onMounted(() => {
       emitter.on('auth-change', actualizarUsuario);
-      actualizarUsuario(); // Lo llamamos una vez al inicio
+      actualizarUsuario(); // Llamamos una vez al inicio
     });
 
     onBeforeUnmount(() => {
@@ -70,15 +90,18 @@ export default {
     function cerrarSesion() {
       localStorage.removeItem('token');
       localStorage.removeItem('usuario');
+      localStorage.removeItem('rol'); // Limpiar el rol también
       nombreUsuario.value = null;
+      rolUsuario.value = null;
       emitter.emit('auth-change');
       window.location.href = '/login';
     }
 
-    return { mostrarNavbar, nombreUsuario, cerrarSesion };
+    return { mostrarNavbar, nombreUsuario, rolUsuario, cerrarSesion };
   }
 };
 </script>
+
 <style>
 /* Estilos generales */
 #app {

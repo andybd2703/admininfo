@@ -16,6 +16,27 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Obtener un usuario específico por ID
+router.get('/:id', async (req, res) => {
+  try {
+    const userId = req.params.id  // Obtener el id del usuario desde la URL
+    const db = await getDB();
+    const query = 'SELECT * FROM users WHERE id = ?';  // Consulta para obtener un solo usuario
+    const [user] = await db.query(query, [userId]);  // Ejecutar la consulta
+
+    if (user.length > 0) {
+      res.json(user[0]);  // Enviar los datos del usuario como respuesta
+    } else {
+      res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al obtener el usuario' });
+  }
+});
+
+
+
 // Eliminar usuario
 router.delete('/:id', async (req, res) => {
   try {
