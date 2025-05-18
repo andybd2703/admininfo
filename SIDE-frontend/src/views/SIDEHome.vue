@@ -8,20 +8,22 @@
       <h2 class="section-title">Bienvenido a <strong>SIDE TEAM</strong> </h2>
       <p class="section-subtitle">Explora nuestros eventos y encuentra el que más te gusta:</p>
 
-      <div class="row justify-content-center">
-        <div v-for="evento in eventos" :key="evento.id" class="col-md-6 col-lg-3 mb-4">
-          <div class="card event-card">
-            <router-link :to="`/detalle-evento/${evento.id}`" class="image-container">
-              <img :src="evento.imagen" class="card-img-top event-image" alt="Imagen evento">
-              <div class="overlay">
-                <p class="event-title">{{ evento.titulo }}</p>
-                <p class="event-description">{{ evento.descripcion }}</p>
-              </div>
-              <p class="event-date">{{ evento.fecha }}</p>
-            </router-link>
-          </div>
+      <div class="events-grid">
+  <div v-for="evento in eventos" :key="evento.id" class="event-card-link">
+    <div class="card event-card">
+      <router-link :to="`/detalle-evento/${evento.id}`" class="image-container">
+        <img :src="getImageUrl(evento.imagen)" class="card-img-top event-image" alt="Imagen evento">
+        <div class="overlay">
+          <p class="event-title">{{ evento.titulo }}</p>
+          <p class="event-description">{{ evento.descripcion }}</p>
         </div>
-      </div>
+        <p class="event-date">{{ formatearFecha(evento.fecha) }}</p>
+
+      </router-link>
+    </div>
+  </div>
+</div>
+
     </div>
 
     <footer class="main-footer">
@@ -76,42 +78,47 @@ export default {
   },
   data() {
     return {
-      eventos: [
-        {
-          id: 1,
-          titulo: "Conferencia Deportiva",
-          descripcion: "Charlas inspiradoras con deportistas destacados sobre cómo el deporte transforma vidas.",
-          imagen: "https://i.imgur.com/mHVZY2p.jpeg",
-          fecha: "Lunes 10 de Junio"
-        },
-        {
-          id: 2,
-          titulo: "Taller de Nutrición Deportiva",
-          descripcion: "Aprende a llevar una alimentación adecuada para mejorar tu rendimiento físico.",
-          imagen: "https://i.imgur.com/89imktm.jpeg",
-          fecha: "Martes 11 de Junio"
-        },
-        {
-          id: 3,
-          titulo: "Exhibición de Deporte Universitario",
-          descripcion: "Presentación de equipos deportivos representativos de la universidad.",
-          imagen: "https://i.imgur.com/al5UI2l.jpeg",
-          fecha: "Miércoles 12 de Junio"
-        },
-        {
-          id: 4,
-          titulo: "Feria Deportiva y Recreativa",
-          descripcion: "Actividades lúdicas, juegos y deportes para toda la comunidad universitaria.",
-          imagen: "https://i.imgur.com/CMFxHk2.jpeg",
-          fecha: "Viernes 14 de Junio"
-        }
-      ],
+      eventos: []
     };
   },
+  methods: {
+    getImageUrl(nombreArchivo) {
+      return nombreArchivo ? `http://localhost:3000/uploads/${nombreArchivo}` : '';
+    },
+    formatearFecha(fechaISO) {
+    if (!fechaISO) return '';
+    const fecha = new Date(fechaISO);
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses empiezan en 0
+    const año = fecha.getFullYear();
+    return `${dia}/${mes}/${año}`;
+  }
+  },
+  mounted() {
+    fetch('http://localhost:3000/api/events')
+      .then(response => response.json())
+      .then(data => {
+        this.eventos = data;
+      })
+      .catch(error => {
+        console.error('Error al cargar eventos:', error);
+      });
+  }
 };
 </script>
 
 <style scoped>
+
+.events-grid {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 2rem 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  justify-content: flex-start; /* Alinear al inicio */
+  /* ❌ flex-wrap: wrap;  Quitar esta línea */
+}
 .page-container {
   font-family: 'Montserrat', sans-serif;
   background-color: #f8f9fa;
@@ -147,62 +154,77 @@ export default {
   justify-content: center;
 }
 
-/* Tarjeta de evento */
+/* --------------------------------------------- */
+/* CARD e IMAGEN ocupan TODO el alto de la card  */
+/* --------------------------------------------- */
 .event-card {
   position: relative;
-  width: 280px;
+  width: 320px; /* fijo para mantener tamaño uniforme */
+  height: 400px; /* altura fija */
   border-radius: 8px;
   overflow: hidden;
   background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
   transition: transform 0.3s ease-in-out;
+  display: block; /* para contener la imagen */
 }
 
 .event-card:hover {
   transform: scale(1.05);
 }
 
-/* Imagen del evento con overlay */
 .image-container {
   position: relative;
-  display: block;
+  height: 100%; /* llena toda la altura de la card */
+  overflow: hidden;
 }
 
 .event-image {
   width: 100%;
+  height: 100%;      /* ocupa todo el alto de su contenedor */
+  object-fit: cover; /* para que rellene sin deformar */
+  object-position: center;
   display: block;
 }
 
-/* Sombreado negro con información del evento */
+/* Overlay para texto encima de la imagen */
 .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: white;
-  padding: 10px;
+  padding: 1.2rem;
   text-align: center;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+  border-radius: 8px;
 }
 
 .image-container:hover .overlay {
   opacity: 1;
 }
 
+/* Texto sobre la card */
 .event-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  color: white;
   font-weight: bold;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .event-description {
-  font-size: 0.9rem;
-  max-width: 80%;
+  font-size: 1rem;
+  max-width: 90%;
+  color: white;
 }
 
 /* Fecha del evento */
@@ -215,6 +237,10 @@ export default {
   padding: 5px 10px;
   font-size: 0.8rem;
   border-radius: 4px;
+}
+
+.event-card-link {
+  scroll-snap-align: start;
 }
 
 /* Footer */
@@ -232,4 +258,5 @@ export default {
 .footer-column h3 {
   font-size: 1.2rem;
 }
+
 </style>

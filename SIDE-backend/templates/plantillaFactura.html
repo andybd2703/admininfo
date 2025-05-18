@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Factura Premium</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab&display=swap');
+
+    /* Reset y fondo */
+    body {
+      margin: 0;
+      padding: 40px;
+      background: linear-gradient(135deg, #0b3d91 0%, #032b65 100%);
+      font-family: 'Montserrat', sans-serif;
+      color: #e0e6f2;
+      -webkit-print-color-adjust: exact;
+    }
+
+    /* Contenedor con fondo azul oscuro y sombra */
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #071a3f;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(3, 43, 101, 0.9);
+      padding: 30px 50px;
+    }
+
+    /* Título con fuente y sombra azul */
+    h1 {
+      font-family: 'Roboto Slab', serif;
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #89aaff;
+      text-shadow: 0 0 15px #4484ff;
+      letter-spacing: 4px;
+    }
+
+    /* Datos cliente y fecha */
+    .info p {
+      font-size: 1.2rem;
+      margin: 8px 0;
+      color: #c8d5f8;
+    }
+
+    .info strong {
+      color: #aac6ff;
+    }
+
+    /* Tabla decorada */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 15px;
+      margin-top: 30px;
+      font-size: 1.1rem;
+      color: #c8d5f8;
+    }
+
+    thead tr {
+      background: #164d9c;
+      color: #e0e6f2;
+      box-shadow: 0 4px 10px rgba(22, 77, 156, 0.7);
+      border-radius: 12px;
+    }
+
+    thead th {
+      padding: 15px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+    }
+
+    tbody tr {
+      background: #0e305f;
+      transition: background-color 0.3s ease;
+      border-radius: 10px;
+    }
+
+    tbody tr:hover {
+      background: #1952b2;
+      color: #f0f7ff;
+    }
+
+    tbody td {
+      padding: 15px;
+      text-align: center;
+      border-radius: 10px;
+    }
+
+    /* Totales destacados */
+    .totales {
+      margin-top: 30px;
+      text-align: right;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #a3c0ff;
+      text-shadow: 0 0 8px #3564e0;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #7a8dbd;
+      font-style: italic;
+    }
+
+    /* Para imprimir bien colores */
+    @media print {
+      body {
+        background: #071a3f !important;
+        -webkit-print-color-adjust: exact;
+      }
+      .container {
+        box-shadow: none;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+     <img src="https://i.imgur.com/hKU4GaP.png" alt="Logo de la empresa" style="max-width: 200px; display: block; margin: 0 auto 20px auto;">
+ 
+    <h1>Factura de Compra ✨</h1>
+
+    <div class="info">
+      <p><strong>Cliente:</strong> {{username}}</p>
+      <p><strong>Fecha:</strong> {{fecha}}</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio unitario</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- FILAS_PRODUCTOS -->
+      </tbody>
+    </table>
+
+    <div class="totales">
+      Total: ${{total}}
+    </div>
+
+    <footer>
+      ¡Gracias por tu compra! 💙 Que tengas un día exitoso.
+    </footer>
+  </div>
+</body>
+</html>

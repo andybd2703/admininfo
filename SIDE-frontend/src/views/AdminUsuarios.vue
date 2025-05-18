@@ -16,13 +16,13 @@
       <tbody>
         <tr v-for="usuario in usuarios" :key="usuario.id" class="border-t">
           <td class="px-4 py-2">{{ usuario.id }}</td>
-          <td class="px-4 py-2">{{ usuario.nombre }}</td>
+          <td class="px-4 py-2">{{ usuario.username }}</td>
           <td class="px-4 py-2">{{ usuario.email }}</td>
-          <td class="px-4 py-2">{{ usuario.rol }}</td>
+          <td class="px-4 py-2">{{ usuario.role }}</td>
           <td class="px-4 py-2">
-            <button @click="abrirFormularioEdicion(usuario)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Editar</button>
-            <button @click="eliminarUsuario(usuario.id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Eliminar</button>
-          </td>
+            <button @click="abrirFormularioEdicion(usuario)" class="btn-editar">Editar</button>
+            <button @click="eliminarUsuario(usuario.id)" class="btn-eliminar">Eliminar</button>
+        </td>
         </tr>
       </tbody>
     </table>
@@ -159,5 +159,32 @@ table {
 }
 th, td {
   text-align: left;
+}
+.btn-editar {
+  background-color: #3b82f6; /* azul */
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-editar:hover {
+  background-color: #2563eb; /* azul oscuro */
+}
+
+.btn-eliminar {
+  background-color: #ef4444; /* rojo */
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-eliminar:hover {
+  background-color: #dc2626; /* rojo oscuro */
 }
 </style>

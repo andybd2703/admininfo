@@ -6,18 +6,23 @@
         <nav class="menu">
           <router-link to="/" class="menu-item">Inicio</router-link>
           <router-link to="/eventos" class="menu-item">Eventos</router-link>
-          <router-link to="/contacto" class="menu-item">Contáctanos</router-link>
+          <router-link to="/favoritos" class="menu-item">Favoritos</router-link>
           <router-link to="/cart" class="menu-item">Carrito</router-link>
         </nav>
+
         <div class="auth-buttons">
-          <!-- Si el usuario está logueado, mostramos su nombre y un botón para cerrar sesión -->
           <template v-if="nombreUsuario">
-            <span style="font-weight: bold;">Hola, {{ nombreUsuario }} 👋</span>
-            
-            <!-- Botón Admin solo si el usuario tiene el rol 'admin' -->
+            <span
+              @click="irAlPerfil"
+              class="auth-button perfil-link"
+              style="background: transparent; color: #173788; font-weight: bold;"
+            >
+              {{ nombreUsuario }}
+            </span>
+
             <template v-if="rolUsuario === 'admin' || rolUsuario === 'organizador'">
               <router-link to="/organizador-home" class="auth-button">
-                <i class="fas fa-calendar-plus"></i> Crear Evento
+                <i class="fas fa-calendar-plus"></i> Panel de eventos
               </router-link>
             </template>
 
@@ -26,13 +31,12 @@
                 <i class="fas fa-cogs"></i> Admin
               </router-link>
             </template>
-            
+
             <button @click="cerrarSesion" class="auth-button">
               <i class="fas fa-sign-out-alt"></i> Cerrar sesión
             </button>
           </template>
-          
-          <!-- Si no, mostramos los botones de login y registro -->
+
           <template v-else>
             <router-link to="/login" class="auth-button">
               <i class="fas fa-sign-in-alt"></i> Iniciar sesión
@@ -48,58 +52,65 @@
   </div>
 </template>
 
+
 <script>
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
-import { useRoute } from 'vue-router';
-import emitter from '@/eventBus';
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import emitter from '@/eventBus'
 
 export default {
   name: 'App',
   setup() {
-    const route = useRoute();
-    const mostrarNavbar = computed(() => {
-      return !['/registro', '/login', '/recuperar-contrasena'].includes(route.path);
-    });
+    const route = useRoute()
+    const router = useRouter()
 
-    const nombreUsuario = ref(null);
-    const rolUsuario = ref(null); // Variable para almacenar el rol del usuario
+    const mostrarNavbar = computed(() => {
+      return !['/registro', '/login', '/recuperar-contrasena'].includes(route.path)
+    })
+
+    const nombreUsuario = ref(null)
+    const rolUsuario = ref(null)
 
     function actualizarUsuario() {
-      const token = localStorage.getItem('token');
-      const nombreGuardado = localStorage.getItem('usuario');
-      const rolGuardado = localStorage.getItem('rol'); // Suponiendo que el rol está en localStorage
+      const token = localStorage.getItem('token')
+      const nombreGuardado = localStorage.getItem('usuario')
+      const rolGuardado = localStorage.getItem('rol')
 
       if (token && nombreGuardado) {
-        nombreUsuario.value = nombreGuardado;
-        rolUsuario.value = rolGuardado; // Asignar el rol
+        nombreUsuario.value = nombreGuardado
+        rolUsuario.value = rolGuardado
       } else {
-        nombreUsuario.value = null;
-        rolUsuario.value = null;
+        nombreUsuario.value = null
+        rolUsuario.value = null
       }
     }
 
-    onMounted(() => {
-      emitter.on('auth-change', actualizarUsuario);
-      actualizarUsuario(); // Llamamos una vez al inicio
-    });
-
-    onBeforeUnmount(() => {
-      emitter.off('auth-change', actualizarUsuario);
-    });
-
     function cerrarSesion() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('usuario');
-      localStorage.removeItem('rol'); // Limpiar el rol también
-      nombreUsuario.value = null;
-      rolUsuario.value = null;
-      emitter.emit('auth-change');
-      window.location.href = '/login';
+      localStorage.removeItem('token')
+      localStorage.removeItem('usuario')
+      localStorage.removeItem('rol')
+      nombreUsuario.value = null
+      rolUsuario.value = null
+      emitter.emit('auth-change')
+      window.location.href = '/login'
     }
 
-    return { mostrarNavbar, nombreUsuario, rolUsuario, cerrarSesion };
+    function irAlPerfil() {
+      router.push('/perfil')
+    }
+
+    onMounted(() => {
+      emitter.on('auth-change', actualizarUsuario)
+      actualizarUsuario()
+    })
+
+    onBeforeUnmount(() => {
+      emitter.off('auth-change', actualizarUsuario)
+    })
+
+    return { mostrarNavbar, nombreUsuario, rolUsuario, cerrarSesion, irAlPerfil }
   }
-};
+}
 </script>
 
 <style>
@@ -182,5 +193,14 @@ export default {
 .auth-button:hover {
   transform: scale(1.05);
   background: #12275d;
+}
+.perfil-link {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.perfil-link:hover {
+  text-decoration: underline;
+  color: #0d2f73;
 }
 </style>

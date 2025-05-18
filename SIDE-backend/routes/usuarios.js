@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const getDB = require('../config/db'); 
 const User = require('../models/User'); // tu modelo
+const authenticateToken = require('../middlewares/auth');
 
 // Obtener todos los usuarios (solo admin)
 router.get('/', async (req, res) => {
@@ -17,21 +18,23 @@ router.get('/', async (req, res) => {
 });
 
 // Obtener un usuario específico por ID
-router.get('/:id', async (req, res) => {
+router.get('/perfil', authenticateToken, async (req, res) => {
   try {
-    const userId = req.params.id  // Obtener el id del usuario desde la URL
     const db = await getDB();
-    const query = 'SELECT * FROM users WHERE id = ?';  // Consulta para obtener un solo usuario
-    const [user] = await db.query(query, [userId]);  // Ejecutar la consulta
+    const userId = req.user.id; // sacado del token
 
-    if (user.length > 0) {
-      res.json(user[0]);  // Enviar los datos del usuario como respuesta
-    } else {
-      res.status(404).json({ error: 'Usuario no encontrado' });
+    const [result] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
     }
+
+    const user = result[0];
+    delete user.password; // 🔐 nunca devuelvas la contraseña
+    res.json(user);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error al obtener el usuario' });
+    res.status(500).json({ error: 'Error al obtener perfil del usuario' });
   }
 });
 
@@ -61,7 +64,6 @@ router.put('/:id', async (req, res) => {
     const { 
       username, 
       email, 
-      password, 
       first_name, 
       last_name, 
       birthdate, 
@@ -83,7 +85,7 @@ router.put('/:id', async (req, res) => {
       SET 
         username = ?, 
         email = ?, 
-        password = ?, 
+        
         first_name = ?, 
         last_name = ?, 
         birthdate = ?, 
@@ -95,7 +97,7 @@ router.put('/:id', async (req, res) => {
     const [result] = await db.query(query, [
       username, 
       email, 
-      password, 
+      
       first_name, 
       last_name, 
       birthdate, 

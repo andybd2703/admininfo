@@ -8,14 +8,9 @@
         <div class="event-info">
           <h1 class="section-title">{{ evento.nombre }}</h1>
           <p class="event-description">{{ evento.descripcion }}</p>
-          <button class="buy-tickets-button">Comprar Entradas</button>
+          <router-link :to="`/compra/${evento.id}`" class="buy-tickets-button">Comprar Entradas</router-link>
+
           
-          <div class="extra-buttons">
-            <button class="cart-button" @click="agregarAlCarrito">🛒 Agregar al carrito</button>
-            <button @click="toggleFavorito">
-            {{ esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos' }}
-          </button>
-          </div>
           
           <div class="quick-info">
             <div class="info-item">
@@ -190,16 +185,31 @@ async verificarFavorito() {
 },
 
 
-  // Agregar al carrito
-  agregarAlCarrito() {
-    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
-    carrito.push({
-      id: this.evento.id,
-      nombre: this.evento.nombre,
-      precio: this.evento.precio_general_full
-    });
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    alert(" ¡Agregado al carrito!");
+   async agregarAlCarrito() {
+    try {
+      const usuarioId = localStorage.getItem('userId');
+      if (!usuarioId) {
+        alert('Debes iniciar sesión para agregar al carrito');
+        return;
+      }
+
+      const payload = {
+        usuario_id: usuarioId,
+        evento_id: this.evento.id,
+        cantidad: 1 // si quieres agregar cantidad, o quitar si no aplica
+      };
+
+      const response = await axios.post('http://localhost:3000/api/carrito/add', payload);
+
+      if (response.status === 200 || response.status === 201) {
+        alert('¡Agregado al carrito correctamente!');
+      } else {
+        alert('No se pudo agregar al carrito, intenta de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error agregando al carrito:', error);
+      alert('Ocurrió un error al agregar al carrito.');
+    }
   }
 }
 

@@ -14,6 +14,7 @@ import OrganizardorHome from '@/views/OrganizardorHome.vue';
 import Compra from '../views/CompraBoletas.vue';
 import favoritos from '../views/Eventosfavoritos.vue';
 import PerfilUsuario from '@/views/PerfilUsuario.vue';
+import FormularioCompra from '@/views/FormularioCompra.vue';
 
 
 // Función para verificar si el usuario está autenticado
@@ -39,9 +40,10 @@ const routes = [
   { path: '/admin', component: Admin, meta: { requiresAdmin: true } },
   { path: '/editar-evento/:id', component: EditarEvento, meta: { requiresAuth: true } },
   { path: '/organizador-home', component: OrganizardorHome, meta: { requiresAuth: true } },
-  { path: '/compra', component: Compra },
-  { path: '/favoritos', component: favoritos },
-  { path: '/perfil', component: PerfilUsuario }
+  { path: '/compra/:id', component: Compra },
+  { path: '/favoritos', component: favoritos,  meta: { requiresAuth: true } },
+  { path: '/perfil', component: PerfilUsuario },
+  { path: '/formularioCompra', component: FormularioCompra }
 
 ];
 

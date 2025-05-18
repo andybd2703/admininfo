@@ -1,15 +1,12 @@
--- copiar y pegar esto en MySQL workbench
-
-
-CREATE DATABASE IF NOT EXISTS side_db;
+DROP DATABASE IF EXISTS side_db;
+CREATE DATABASE side_db;
 USE side_db;
 
--- Eliminar primero las tablas que tienen foreign keys
+DROP TABLE IF EXISTS carrito;
 DROP TABLE IF EXISTS favoritos;
 DROP TABLE IF EXISTS eventos;
 DROP TABLE IF EXISTS users;
 
--- Tabla de usuarios
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(100) NOT NULL UNIQUE,
@@ -24,7 +21,6 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de eventos
 CREATE TABLE eventos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(255) NOT NULL,
@@ -44,7 +40,6 @@ CREATE TABLE eventos (
   FOREIGN KEY (usuario_id) REFERENCES users(id)
 );
 
--- Tabla de favoritos
 CREATE TABLE favoritos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   usuario_id INT NOT NULL,
@@ -53,3 +48,24 @@ CREATE TABLE favoritos (
   FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (evento_id) REFERENCES eventos(id) ON DELETE CASCADE
 );
+
+CREATE TABLE carrito (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  evento_id INT NOT NULL,
+  categoria ENUM('general', 'vip', 'platino') NOT NULL,
+  cantidad INT NOT NULL DEFAULT 1,
+  UNIQUE(usuario_id, evento_id, categoria),
+  FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (evento_id) REFERENCES eventos(id) ON DELETE CASCADE
+);
+
+---------------------------------------------------------------------------------------------
+cuando se cree un usuario usar este comando para darle rol de admin:
+
+
+USE side_db;
+UPDATE users
+SET role = 'admin'
+WHERE id = 1;
+

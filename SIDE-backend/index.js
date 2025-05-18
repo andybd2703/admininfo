@@ -12,6 +12,8 @@ const authRoutes = require('./routes/auth');
 const eventosRoutes = require('./routes/events');
 const usuariosRoutes = require('./routes/usuarios');
 const favoritosRoutes = require('./routes/favoritos');
+const carritoRoutes = require('./routes/carrito')
+const compraRouter = require('./routes/compra');
 
 const db = require('./config/db');
 
@@ -74,7 +76,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/events', eventosRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/favoritos', favoritosRoutes);
-
+app.use('/api/carrito',carritoRoutes);
+app.use('/api/compra', compraRouter);
 // Ruta de prueba simple
 app.get('/api/ping', (req, res) => {
   res.json({ message: 'pong' });
