@@ -30,11 +30,6 @@
       <div class="footer-columns">
         <div class="footer-column">
           <h3>SIDE USC</h3>
-          <ul>
-            <li>Servicios Integrales de Eventos</li>
-            <li>Número de contacto:</li>
-            <li>+57 3207256230</li>
-          </ul>
         </div>
         <div class="footer-column">
           <h3>Categorías</h3>
@@ -67,6 +62,19 @@
       </div>
     </footer>
   </div>
+  <a
+  href="https://wa.me/573205063020"
+  target="_blank"
+  class="whatsapp-float"
+  aria-label="Chat en WhatsApp"
+>
+  <img
+    src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+    alt="WhatsApp"
+    class="whatsapp-icon"
+  />
+</a>
+
 </template>
 
 <script>
@@ -123,6 +131,28 @@ export default {
   font-family: 'Montserrat', sans-serif;
   background-color: #f8f9fa;
 }
+
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  width: 60px;
+  height: 60px;
+  background-color: #25D366;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+.whatsapp-icon {
+  width: 35px;
+  height: 35px;
+}
+
 
 /* Estilos del Banner */
 .banner-container {
