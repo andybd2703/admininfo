@@ -279,7 +279,7 @@ formatCurrency(value) {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
-  color: #6b4c9a; /* color morado suave */
+  color: #0332cd; /* color morado suave */
   font-weight: 600;
   font-size: 1.1rem;
   margin-top: 1.5rem;
