@@ -18,17 +18,17 @@
           </div>
 
           <div class="quick-info">
-            <p>Arena USC</p>
-            <p>{{ formattedFecha }}</p>
-            <p>{{ evento.hora }}</p>
-            <p>{{ evento.edad_minima }} años</p>
+            <div class="info-item">📍 Arena USC</div>
+            <div class="info-item">📅 {{ formattedFecha }}</div>
+            <div class="info-item">⏰ {{ evento.hora }}</div>
+            <div class="info-item">👶 {{ evento.edad_minima }} años</div>
           </div>
         </div>
       </div>
-    </section>
 
-    <section class="event-bottom">
-      <div class="details">
+
+      <section>
+              <div class="details">
         <h2>{{ evento.lugar }}</h2>
         <p>{{ formattedFecha }} a las {{ evento.hora }}</p>
 
@@ -77,7 +77,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+        </div>
 
 
         <div class="faq">
@@ -90,17 +90,23 @@
           </ul>
         </div>
       </div>
+      </section>
+    </section>
+
+    <section class="event-bottom">
+
 
       <aside class="visuals">
-        <div>
-          <h3>Mapa de sillas</h3>
+        <div class="image-card">
+          <h3>📍 Mapa de Sillas</h3>
           <img src="https://i.imgur.com/NF8QZZ6.jpeg" alt="Mapa Arena USC" />
         </div>
-        <div>
-          <h3>Vista previa</h3>
+        <div class="image-card">
+          <h3>🎥 Vista Previa del Escenario</h3>
           <img src="https://i.imgur.com/SK3FE5g.jpeg" alt="Vista Arena USC" />
         </div>
       </aside>
+
     </section>
 
     <footer class="final-message">
@@ -131,7 +137,8 @@ export default {
       return this.evento.fecha
         ? format(new Date(this.evento.fecha), 'dd MMMM yyyy', { locale: es })
         : '';
-    }
+    },
+
   },
   created() {
     const id = this.$route.params.id;
@@ -243,52 +250,115 @@ formatCurrency(value) {
 
 <style scoped>
 .event-detail {
-  padding: 20px;
-  background-color: #fafafa;
+  padding: 2rem;
+  background: #f4f4f9;
   font-family: 'Segoe UI', sans-serif;
+  color: #333;
 }
 
 .event-top {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .event-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-  padding: 20px;
-  max-width: 700px;
+  background: #fff;
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 24px rgba(102, 51, 153, 0.15);
+  padding: 2rem;
+  max-width: 720px;
   width: 100%;
   text-align: center;
 }
 
+/*DESCRIPCION EVENTO*/
+.quick-info {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  color: #6b4c9a; /* color morado suave */
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+
+
 .event-image img {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 1rem;
+  object-fit: cover;
 }
 
 .event-info h1 {
-  font-size: 1.8rem;
-  margin-top: 15px;
+  font-size: 2.5rem;
+  color: #50257c;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.event-info h2 {
+  font-size: 1.5rem;
+  color: #777;
+  margin-top: 0;
+}
+.event-info {
+  background-color: #faf6ff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(80, 37, 124, 0.1);
+  margin-bottom: 1.5rem;
 }
 
+.event-info {
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
 .description {
-  margin: 15px 0;
-  font-size: 1rem;
-  color: #444;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .actions button {
-  margin: 5px;
-  padding: 10px 15px;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 0.75rem;
   background-color: #663399;
-  color: white;
+  color: #fff;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s ease;
 }
 
 .actions button:hover {
@@ -296,88 +366,135 @@ formatCurrency(value) {
 }
 
 .quick-info {
-  margin-top: 10px;
-  color: #666;
-  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  color: #777;
+  font-size: 1rem;
 }
 
 .event-bottom {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 2rem;
 }
 
 .details {
   flex: 2;
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.details h2 {
+  color: #663399;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.details h3 {
+  margin-top: 1.5rem;
+  color: #333;
 }
 
 .visuals {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
 }
 
-.visuals img {
+.image-card {
+  flex: 1 1 300px;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 24px rgba(102, 51, 153, 0.25);
+}
+
+.image-card h3 {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #663399;
+  margin-bottom: 0.75rem;
+}
+
+.image-card img {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 0.75rem;
+  max-height: 300px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.image-card img:hover {
+  transform: scale(1.03);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 
 th, td {
-  padding: 10px;
-  text-align: left;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.95rem;
 }
 
 th {
   background-color: #eee;
+  font-weight: 600;
+}
+
+td {
+  border-bottom: 1px solid #ddd;
 }
 
 .ticket-quantity input {
-  margin-left: 10px;
   width: 60px;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  border: 1px solid #ccc;
 }
 
 .faq ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  margin-top: 1rem;
 }
 
 .faq li {
-  margin: 8px 0;
+  margin: 0.5rem 0;
+  line-height: 1.6;
 }
 
 .final-message {
-  margin-top: 40px;
+  margin-top: 3rem;
   text-align: center;
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #444;
-}
-.ticket-quantity table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #50257c;
+  background-color: #ede9f3;
+  padding: 1rem;
+  border-radius: 1rem;
 }
 
-.ticket-quantity th,
-.ticket-quantity td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center;
+/* Responsivo */
+@media (max-width: 768px) {
+  .visuals {
+    flex-direction: column;
+    align-items: center;
+  }
 }
-
-.ticket-quantity input {
-  width: 60px;
-}
-
 </style>
+

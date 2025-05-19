@@ -1,8 +1,16 @@
 <template>
   <div class="page-container">
-    <div class="banner-container">
-      <img src="https://i.imgur.com/aFz9w6I.jpeg" alt="Banner Queen" class="banner-image">
-    </div>
+    <!-- Carrusel -->
+      <div class="carousel-container">
+        <div class="carousel" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
+          <div class="carousel-slide" v-for="(img, index) in imagenesCarrusel" :key="index">
+            <img :src="img" alt="Slide" class="carousel-image" />
+          </div>
+        </div>
+        <button class="carousel-btn prev" @click="prevSlide">&#10094;</button>
+        <button class="carousel-btn next" @click="nextSlide">&#10095;</button>
+      </div>
+
 
     <div class="event-section">
       <h2 class="section-title">Bienvenido a <strong>SIDE TEAM</strong> </h2>
@@ -86,7 +94,13 @@ export default {
   },
   data() {
     return {
-      eventos: []
+      eventos: [],
+      imagenesCarrusel: [
+        'https://i.imgur.com/Tjg2GqD.jpeg',
+        'https://i.imgur.com/tQ0jc2K.png',
+        'https://i.imgur.com/gJACf2u.png'
+      ],
+      currentSlide: 0
     };
   },
   methods: {
@@ -94,13 +108,20 @@ export default {
       return nombreArchivo ? `http://localhost:3000/uploads/${nombreArchivo}` : '';
     },
     formatearFecha(fechaISO) {
-    if (!fechaISO) return '';
-    const fecha = new Date(fechaISO);
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses empiezan en 0
-    const año = fecha.getFullYear();
-    return `${dia}/${mes}/${año}`;
-  }
+      if (!fechaISO) return '';
+      const fecha = new Date(fechaISO);
+      const dia = fecha.getDate().toString().padStart(2, '0');
+      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+      const año = fecha.getFullYear();
+      return `${dia}/${mes}/${año}`;
+    },
+    nextSlide() {
+      this.currentSlide = (this.currentSlide + 1) % this.imagenesCarrusel.length;
+    },
+    prevSlide() {
+      this.currentSlide =
+        (this.currentSlide - 1 + this.imagenesCarrusel.length) % this.imagenesCarrusel.length;
+    }
   },
   mounted() {
     fetch('http://localhost:3000/api/events')
@@ -115,7 +136,57 @@ export default {
 };
 </script>
 
+
 <style scoped>
+
+
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 100%;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  height: 100%;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(23, 55, 136, 0.6);
+  color: white;
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 2rem;
+  z-index: 2;
+  border-radius: 50%;
+}
+
+.carousel-btn.prev {
+  left: 10px;
+}
+
+.carousel-btn.next {
+  right: 10px;
+}
+
 
 .events-grid {
   display: flex;
