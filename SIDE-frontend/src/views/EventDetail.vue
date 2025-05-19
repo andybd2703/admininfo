@@ -14,16 +14,16 @@
           
           <div class="quick-info">
             <div class="info-item">
-              <p class="info-text"> Arena USC </p>
+            <div class="info-item">📍 Arena USC</div>
             </div>
             <div class="info-item">
-              <p class="info-text">{{ formattedFecha }}</p>
+            <div class="info-item">📅 {{ formattedFecha }}</div>
             </div>
             <div class="info-item">
-              <p class="info-text">{{ evento.hora }}</p>
+            <div class="info-item">⏰ {{ formattedHora }}</div>
             </div>
             <div class="info-item">
-              <p class="info-text">{{ evento.edad_minima }} años</p>
+            <div class="info-item">👶 {{ evento.edad_minima }} años</div>
             </div>
           </div>
         </div>
@@ -34,8 +34,6 @@
       <div class="details-container">
         <div class="event-details">
           <h2 class="section-title">{{ evento.lugar }}</h2>
-          <p class="event-date-detail">{{ formattedFecha }} a las {{ evento.hora }}</p>
-
           <div class="locations-prices">
             <h3 class="subsection-title">Boletos y Precios</h3>
             <table class="prices-table">
@@ -118,104 +116,102 @@ export default {
   },
   computed: {
     formattedFecha() {
-      return this.evento.fecha ? format(new Date(this.evento.fecha), 'dd MMMM yyyy', { locale: es }) : '';
-    }
-  },
+      return this.evento.fecha
+        ? format(new Date(this.evento.fecha), 'dd MMMM yyyy', { locale: es })
+        : '';
+    },
+    formattedHora() {
+      if (!this.evento.hora) return '';
+      const [hora, minuto] = this.evento.hora.split(':');
+      const date = new Date();
+      date.setHours(parseInt(hora), parseInt(minuto));
+      return format(date, 'hh:mm a', { locale: es });
+    },
+  },  // <-- Esta coma es importantísima para que no dé error
   created() {
     const eventoId = this.$route.params.id;
     this.obtenerEvento(eventoId);
     this.verificarFavorito(eventoId);
   },
   methods: {
-  async obtenerEvento(id) {
-  try {
-    const response = await axios.get(`http://localhost:3000/api/events/${id}`);
-    this.evento = response.data;
-    console.log(" Evento cargado:", this.evento);
+    async obtenerEvento(id) {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/events/${id}`);
+        this.evento = response.data;
+        console.log(" Evento cargado:", this.evento);
 
-    // 👇 Llamamos a verificarFavorito solo después de tener el evento
-    this.verificarFavorito();
-  } catch (error) {
-    console.error(" Error al obtener el evento:", error);
-  }
-}
-,
+        // 👇 Llamamos a verificarFavorito solo después de tener el evento
+        this.verificarFavorito();
+      } catch (error) {
+        console.error(" Error al obtener el evento:", error);
+      }
+    },
 
-  // Función para alternar el estado de favorito con el backend
-  async toggleFavorito() {
-  try {
-    const usuarioId = localStorage.getItem('userId'); // Asegúrate de obtener el ID del usuario correctamente
-    const eventoId = this.evento.id;
+    async toggleFavorito() {
+      try {
+        const usuarioId = localStorage.getItem('userId');
+        const eventoId = this.evento.id;
 
-    if (this.esFavorito) {
-      // Si es favorito, eliminamos
-      await axios.delete('http://localhost:3000/api/favoritos/remove', {
-        data: {
-          usuario_id: usuarioId,  // Usamos el ID del usuario
-          evento_id: eventoId      // Usamos el ID del evento
+        if (this.esFavorito) {
+          await axios.delete('http://localhost:3000/api/favoritos/remove', {
+            data: {
+              usuario_id: usuarioId,
+              evento_id: eventoId
+            }
+          });
+        } else {
+          await axios.post('http://localhost:3000/api/favoritos/add', {
+            usuario_id: usuarioId,
+            evento_id: eventoId
+          });
         }
-      });
-    } else {
-      // Si no es favorito, lo agregamos
-      await axios.post('http://localhost:3000/api/favoritos/add', {
-        usuario_id: usuarioId,
-        evento_id: eventoId
-      });
-    }
-
-    // Cambiar el estado local de favorito
-    this.esFavorito = !this.esFavorito; 
-  } catch (error) {
-    console.error(" Error al actualizar favorito:", error);
-  }
-},
-
-
-  // Verificar si el evento ya es favorito llamando al backend
- // Verificar si el evento es favorito
-async verificarFavorito() {
-  try {
-    const usuarioId = localStorage.getItem('userId'); // Asegúrate de obtener el ID del usuario correctamente
-    const eventoId = this.evento.id;
-    const response = await axios.get(`http://localhost:3000/api/favoritos/verificar/${usuarioId}/${eventoId}`);
-    this.esFavorito = response.data.isFavorito;
-  } catch (error) {
-    console.error(" Error al verificar si es favorito:", error);
-  }
-},
-
-
-   async agregarAlCarrito() {
-    try {
-      const usuarioId = localStorage.getItem('userId');
-      if (!usuarioId) {
-        alert('Debes iniciar sesión para agregar al carrito');
-        return;
+        this.esFavorito = !this.esFavorito; 
+      } catch (error) {
+        console.error(" Error al actualizar favorito:", error);
       }
+    },
 
-      const payload = {
-        usuario_id: usuarioId,
-        evento_id: this.evento.id,
-        cantidad: 1 // si quieres agregar cantidad, o quitar si no aplica
-      };
-
-      const response = await axios.post('http://localhost:3000/api/carrito/add', payload);
-
-      if (response.status === 200 || response.status === 201) {
-        alert('¡Agregado al carrito correctamente!');
-      } else {
-        alert('No se pudo agregar al carrito, intenta de nuevo.');
+    async verificarFavorito() {
+      try {
+        const usuarioId = localStorage.getItem('userId');
+        const eventoId = this.evento.id;
+        const response = await axios.get(`http://localhost:3000/api/favoritos/verificar/${usuarioId}/${eventoId}`);
+        this.esFavorito = response.data.isFavorito;
+      } catch (error) {
+        console.error(" Error al verificar si es favorito:", error);
       }
-    } catch (error) {
-      console.error('Error agregando al carrito:', error);
-      alert('Ocurrió un error al agregar al carrito.');
+    },
+
+    async agregarAlCarrito() {
+      try {
+        const usuarioId = localStorage.getItem('userId');
+        if (!usuarioId) {
+          alert('Debes iniciar sesión para agregar al carrito');
+          return;
+        }
+
+        const payload = {
+          usuario_id: usuarioId,
+          evento_id: this.evento.id,
+          cantidad: 1
+        };
+
+        const response = await axios.post('http://localhost:3000/api/carrito/add', payload);
+
+        if (response.status === 200 || response.status === 201) {
+          alert('¡Agregado al carrito correctamente!');
+        } else {
+          alert('No se pudo agregar al carrito, intenta de nuevo.');
+        }
+      } catch (error) {
+        console.error('Error agregando al carrito:', error);
+        alert('Ocurrió un error al agregar al carrito.');
+      }
     }
   }
-}
-
-
 };
 </script>
+
 
 
 <style scoped>
@@ -225,7 +221,7 @@ async verificarFavorito() {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f4f4f4;
+  background-color: #e6ecf5;
   margin: 0;
   padding: 20px;
   box-sizing: border-box;
@@ -235,34 +231,37 @@ async verificarFavorito() {
 .top-section {
   background-size: cover;
   background-position: center top;
-  padding: 25px 15px; /* Reducido */
+  padding: 25px 15px;
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
 .event-card {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 720px; /* Tamaño reducido */
+  max-width: 720px;
   width: 100%;
   padding: 15px;
   box-sizing: border-box;
 }
 
 .event-image {
-  width: 100%; /* Imagen a tamaño completo */
+  width: 100%;
   border-radius: 8px;
-  margin-bottom: 12px; /* Reducido */
+  margin-bottom: 12px;
+  overflow: hidden;
 }
 
 .event-image img {
   width: 100%;
   display: block;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .event-info {
@@ -272,24 +271,18 @@ async verificarFavorito() {
   width: 100%;
 }
 
-.buy-tickets-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem; /* Tamaño reducido */
-  transition: background-color 0.3s ease;
-}
-
-.buy-tickets-button:hover {
-  background-color: #0056b3;
+.section-title {
+  color: #002b80;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #dbe2ef;
+  padding-bottom: 8px;
+  text-align: center;
 }
 
 .event-description {
   color: #333;
-  font-size: 0.9rem; /* Más pequeño */
+  font-size: 0.95rem;
   line-height: 1.5;
   margin-top: 15px;
   margin-bottom: 20px;
@@ -297,11 +290,32 @@ async verificarFavorito() {
   width: 85%;
 }
 
+.buy-tickets-button,
+.cart-button,
+.favorites-button {
+  background-color: #002b80;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+  text-decoration: none;
+}
+
+.buy-tickets-button:hover,
+.cart-button:hover,
+.favorites-button:hover {
+  background-color: #001f5c;
+}
+
 .quick-info {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 15px; /* Reducido */
+  margin-bottom: 15px;
   width: 85%;
 }
 
@@ -311,21 +325,16 @@ async verificarFavorito() {
   margin: 5px 10px;
 }
 
-.info-icon {
-  width: 20px; /* Más pequeño */
-  height: 20px;
-  margin-right: 6px; /* Menos margen */
-}
-
 .info-text {
-  color: #555;
-  font-size: 0.85rem; /* Menor tamaño de fuente */
+  color: #002b80;
+  font-weight: bold;
+  font-size: 0.9rem;
 }
 
-/* Estilos sección inferior */
+/* Sección inferior */
 .bottom-section {
-  background-color: #f9f9f9;
-  padding: 20px 15px; /* Reducido */
+  background-color: #f0f4fa;
+  padding: 20px 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -338,11 +347,11 @@ async verificarFavorito() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px; /* Más pequeño */
+  gap: 15px;
 }
 
 .event-details {
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 15px;
@@ -350,25 +359,17 @@ async verificarFavorito() {
   width: 100%;
 }
 
-.section-title {
-  color: #333;
-  font-size: 1.5rem; /* Más pequeño */
-  margin-bottom: 10px;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 8px;
-  text-align: center;
-}
-
 .event-date-detail {
-  color: #777;
-  font-size: 0.85rem; /* Reducido */
+  color: #666;
+  font-size: 0.85rem;
   margin-bottom: 10px;
   text-align: center;
 }
 
 .subsection-title {
-  color: #555;
-  font-size: 1rem; /* Reducido */
+  color: #002b80;
+  font-weight: bold;
+  font-size: 1rem;
   margin-top: 15px;
   margin-bottom: 8px;
   text-align: center;
@@ -381,15 +382,19 @@ async verificarFavorito() {
 }
 
 .prices-table th, .prices-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   padding: 6px;
-  text-align: left;
+  text-align: center;
 }
 
 .prices-table th {
-  background-color: #f5f5f5;
-  font-weight: bold;
-  text-align: center;
+  background-color: #002b80;
+  color: white;
+}
+
+.prices-table td {
+  background-color: #f8f9fc;
+  color: #333;
 }
 
 .frequent-questions {
@@ -407,11 +412,11 @@ async verificarFavorito() {
 
 .question {
   font-weight: bold;
-  color: #333;
+  color: #002b80;
 }
 
 .answer {
-  color: #555;
+  color: #444;
 }
 
 .venue-info {
@@ -422,8 +427,9 @@ async verificarFavorito() {
   width: 100%;
 }
 
-.map-preview, .seats-preview {
-  background-color: #fff;
+.map-preview,
+.seats-preview {
+  background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 12px;
@@ -432,28 +438,33 @@ async verificarFavorito() {
   width: 100%;
 }
 
-.map-title, .seats-title {
-  color: #555;
-  font-size: 1rem; /* Reducido */
+.map-title,
+.seats-title {
+  color: #002b80;
+  font-size: 1rem;
   margin-bottom: 8px;
+  font-weight: bold;
 }
 
-.map-preview img, .seats-preview img {
+.map-preview img,
+.seats-preview img {
   max-width: 100%;
   border-radius: 5px;
   display: block;
   margin: 0 auto;
+  object-fit: cover;
 }
 
 .final-message {
   text-align: center;
   padding: 15px;
-  color: #666;
+  color: #003366;
   font-style: italic;
   margin-top: 20px;
   max-width: 720px;
   width: 100%;
 }
+
 .extra-buttons {
   display: flex;
   gap: 10px;
@@ -461,30 +472,5 @@ async verificarFavorito() {
   flex-wrap: wrap;
   justify-content: center;
 }
-
-.cart-button,
-.favorites-button {
-  background-color: #ffc107;
-  color: #333;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
-}
-
-.cart-button:hover {
-  background-color: #e0a800;
-}
-
-.favorites-button {
-  background-color: #dc3545;
-  color: white;
-}
-
-.favorites-button:hover {
-  background-color: #c82333;
-}
-
 </style>
+

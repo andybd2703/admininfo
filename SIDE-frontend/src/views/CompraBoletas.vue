@@ -301,7 +301,7 @@ formatCurrency(value) {
 
 .event-info h1 {
   font-size: 2.5rem;
-  color: #50257c;
+  color: #001f5c;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
@@ -354,7 +354,7 @@ formatCurrency(value) {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 0.75rem;
-  background-color: #663399;
+  background-color: #002b80;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
@@ -362,7 +362,7 @@ formatCurrency(value) {
 }
 
 .actions button:hover {
-  background-color: #50257c;
+  background-color: #001f5c;
 }
 
 .quick-info {
@@ -443,28 +443,37 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
-}
-
-th, td {
-  padding: 0.75rem;
-  text-align: center;
-  font-size: 0.95rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 43, 128, 0.1);
 }
 
 th {
-  background-color: #eee;
+  background-color: #002b80;
+  color: white;
   font-weight: 600;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 1rem;
 }
 
 td {
-  border-bottom: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #d3dff5;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #e6ecfa;
 }
 
 .ticket-quantity input {
   width: 60px;
   padding: 0.4rem;
   border-radius: 0.4rem;
-  border: 1px solid #ccc;
+  border: 1px solid #002b80;
+  text-align: center;
 }
 
 .faq ul {
