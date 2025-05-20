@@ -1,61 +1,79 @@
 <template>
-  <div class="compra-container">
-    <h1>Confirmar Compra</h1>
+  <div class="page-wrapper">
+    <div class="main-content-box">
+      <h1 class="page-title">🛒 Confirmar Compra</h1>
 
-    <section class="resumen-compra" v-if="items.length">
-      <h2>Resumen de la compra</h2>
-      <ul>
-        <li v-for="(item, index) in items" :key="index">
-          {{ item.nombre }} - {{ item.cantidad }} x ${{ formatoPrecio(item.precio_unitario) }} = ${{ formatoPrecio(item.cantidad * item.precio_unitario) }}
-        </li>
-      </ul>
-      <p class="total"><strong>Total: ${{ formatoPrecio(total) }}</strong></p>
-    </section>
-    <section v-else>
-      <p>No hay productos en el carrito.</p>
-    </section>
+      <section class="summary-section" v-if="items.length">
+        <h2 class="section-title"><i class="fas fa-receipt"></i> Resumen de la compra</h2>
+        <ul class="item-list">
+          <li v-for="(item, index) in items" :key="index" class="item-list-item">
+            <span class="item-name">{{ item.nombre }}</span> -
+            <span class="item-quantity">{{ item.cantidad }}</span> x
+            <span class="item-price">${{ formatoPrecio(item.precio_unitario) }}</span> =
+            <span class="item-subtotal">${{ formatoPrecio(item.cantidad * item.precio_unitario) }}</span>
+          </li>
+        </ul>
+        <p class="total-price">
+          <strong>Total: ${{ formatoPrecio(total) }}</strong>
+        </p>
+      </section>
+      <section v-else class="empty-cart-message">
+        <p><i class="fas fa-shopping-cart"></i> Tu carrito está vacío. ¡Añade algunos eventos!</p>
+        <router-link to="/eventos" class="action-button">
+          Explorar Eventos
+        </router-link>
+      </section>
 
-    <form @submit.prevent="submitCompra" class="form-pago" v-if="items.length">
-      <h2>Opciones de pago</h2>
+      <form @submit.prevent="submitCompra" class="payment-form" v-if="items.length">
+        <h2 class="section-title"><i class="fas fa-wallet"></i> Opciones de pago</h2>
 
-      <label>
-        <input
-          type="radio"
-          value="tarjeta"
-          v-model="metodoPago"
-          required
-        />
-        Tarjeta de crédito/débito
-      </label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input
+              type="radio"
+              value="tarjeta"
+              v-model="metodoPago"
+              required
+            />
+            <span class="custom-radio"></span>
+            <i class="fas fa-credit-card icon-payment"></i> Tarjeta de crédito/débito
+          </label>
 
-      <label>
-        <input
-          type="radio"
-          value="paypal"
-          v-model="metodoPago"
-          required
-        />
-        PayPal
-      </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              value="paypal"
+              v-model="metodoPago"
+              required
+            />
+            <span class="custom-radio"></span>
+            <i class="fab fa-paypal icon-payment"></i> PayPal
+          </label>
 
-      <label>
-        <input
-          type="radio"
-          value="transferencia"
-          v-model="metodoPago"
-          required
-        />
-        Transferencia bancaria
-      </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              value="transferencia"
+              v-model="metodoPago"
+              required
+            />
+            <span class="custom-radio"></span>
+            <i class="fas fa-university icon-payment"></i> Transferencia bancaria
+          </label>
+        </div>
 
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Procesando...' : 'Confirmar compra' }}
-      </button>
-    </form>
+        <button type="submit" :disabled="loading" class="confirm-button">
+          <i :class="loading ? 'fas fa-spinner fa-spin' : 'fas fa-check-circle'"></i>
+          {{ loading ? 'Procesando Compra...' : 'Confirmar Compra' }}
+        </button>
+      </form>
 
-    <div v-if="error" class="error">{{ error }}</div>
-    <div v-if="success" class="success">
-      ¡Compra realizada con éxito! Tu factura se descargará automáticamente.
+      <div v-if="error" class="message-box error-message">
+        <i class="fas fa-times-circle"></i> {{ error }}
+      </div>
+      <div v-if="success" class="message-box success-message">
+        <i class="fas fa-check-circle"></i> ¡Compra realizada con éxito! Tu factura se descargará automáticamente.
+      </div>
     </div>
   </div>
 </template>
@@ -66,7 +84,6 @@ export default {
   data() {
     return {
       items: [],
-      
       metodoPago: '',
       loading: false,
       error: '',
@@ -85,177 +102,483 @@ export default {
       return isNaN(numero) ? '0.00' : numero.toFixed(2);
     },
     async submitCompra() {
-  this.error = '';
-  this.success = false;
+      this.error = '';
+      this.success = false;
 
-  if (!this.metodoPago) {
-    this.error = 'Por favor, selecciona un método de pago.';
-    return;
-  }
+      if (!this.metodoPago) {
+        this.error = 'Por favor, selecciona un método de pago.';
+        return;
+      }
 
-  this.loading = true;
+      this.loading = true;
 
-  try {
-    const username = localStorage.getItem('usuario'); // o el nombre que tengas
+      try {
+        const username = localStorage.getItem('usuario'); // o el nombre que tengas
+        const token = localStorage.getItem('token'); // Obtener el token del localStorage
 
-    const orderData = {
-      username,
-      items: this.items,
-      total: this.total,
-      metodoPago: this.metodoPago
-    };
+        const orderData = {
+          username,
+          items: this.items,
+          total: this.total,
+          metodoPago: this.metodoPago
+        };
 
-    const response = await fetch('http://localhost:3000/api/compra', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
-    });
+        const response = await fetch('http://localhost:3000/api/compra', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Incluir el token en los headers
+          },
+          body: JSON.stringify(orderData)
+        });
 
-    if (!response.ok) {
-      throw new Error('Error procesando la compra');
+        if (!response.ok) {
+          const errorData = await response.json(); // Intentar leer el mensaje de error del backend
+          throw new Error(errorData.message || 'Error procesando la compra');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'factura.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        this.success = true;
+        // Opcional: Limpiar el carrito después de una compra exitosa
+        // Si tu backend tiene un endpoint para esto:
+        // await fetch(`http://localhost:3000/api/carrito/${this.usuario_id}`, { method: 'DELETE' });
+        this.items = []; // Limpiar el carrito localmente
+      } catch (err) {
+        this.error = err.message || 'Error inesperado al procesar la compra.';
+      } finally {
+        this.loading = false;
+      }
     }
-
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'factura.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
-
-    this.success = true;
-  } catch (err) {
-    this.error = err.message || 'Error inesperado';
-  } finally {
-    this.loading = false;
-  }
-}
-
   },
   async mounted() {
     try {
-      const res = await fetch(`http://localhost:3000/api/carrito/${this.usuario_id}`);
-      if (!res.ok) throw new Error('Error al obtener el carrito');
+      const token = localStorage.getItem('token'); // Obtener el token del localStorage
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+      const res = await fetch(`http://localhost:3000/api/carrito/${this.usuario_id}`, { headers });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Error al obtener el carrito.');
+      }
       const data = await res.json();
       this.items = data;
+      // Redirigir si el carrito está vacío al cargar la página y no hay mensaje previo
+      if (this.items.length === 0 && !this.error && !this.success) {
+        // this.$router.push('/eventos'); // O a la página de inicio
+      }
     } catch (err) {
-      this.error = err.message;
+      this.error = err.message || 'Error al cargar los productos del carrito.';
+      this.items = []; // Asegurarse de que no haya items si hay un error
     }
   }
 }
 </script>
+
 <style scoped>
-.compra-container {
-  max-width: 480px;
-  margin: 2rem auto;
-  padding: 1.8rem 2rem;
-  background: #f9f9fb;
+/* Importa Font Awesome para los íconos */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* Contenedor principal de la página, replicando el fondo suave */
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinea arriba para que el contenido fluya */
+  min-height: 100vh; /* Ocupa al menos toda la altura de la ventana */
+  padding: 40px 20px; /* Padding para el contenido general */
+  background-color: #f0f2f5; /* Un color de fondo suave */
+  box-sizing: border-box;
+}
+
+/* Caja principal que contiene el formulario/resumen */
+.main-content-box {
+  background-color: rgba(255, 255, 255, 0.95); /* Blanco semitransparente para la caja */
+  padding: 50px;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
+  width: 100%;
+  max-width: 600px; /* Ancho máximo para el contenido */
+  box-sizing: border-box;
 }
 
-h1 {
+/* Título de la página */
+.page-title {
   text-align: center;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 1.4rem;
+  color: #173788; /* Color principal */
+  margin-bottom: 40px;
+  font-size: 2.5rem; /* Un poco más grande */
+  font-weight: bold;
 }
 
-h2 {
-  font-weight: 600;
-  color: #34495e;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid #3498db;
-  padding-bottom: 0.3rem;
+/* Estilos de las secciones (resumen, pago) */
+.summary-section,
+.payment-form {
+  margin-bottom: 30px; /* Espacio entre secciones */
+  padding-bottom: 30px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.resumen-compra ul {
+.summary-section:last-of-type,
+.payment-form:last-of-type {
+  border-bottom: none; /* Sin borde en la última sección */
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-weight: bold;
+  color: #173788; /* Color principal */
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #173788; /* Línea debajo del título */
+  padding-bottom: 8px;
+}
+
+.section-title i {
+  margin-right: 12px;
+  font-size: 1.5rem;
+  color: #173788;
+}
+
+/* Lista de items del carrito */
+.item-list {
   list-style-type: none;
-  padding-left: 0;
-  margin-bottom: 1rem;
+  padding: 0;
+  margin-bottom: 20px;
+  background-color: #fcfcfc;
+  border-radius: 8px;
+  overflow: hidden; /* Para border-radius en el primer/último item */
 }
 
-.resumen-compra li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #e1e4e8;
-  font-size: 1rem;
+.item-list-item {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem;
+  color: #444;
 }
 
-.total {
-  font-size: 1.25rem;
+.item-list-item:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+.item-quantity,
+.item-price,
+.item-subtotal {
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+.item-subtotal {
+    color: #173788; /* Color principal para el subtotal */
+    font-weight: bold;
+}
+
+/* Total de la compra */
+.total-price {
+  font-size: 1.5rem;
   text-align: right;
-  color: #27ae60;
-  margin-top: 1rem;
-  font-weight: 700;
+  color: #173788; /* Color principal */
+  margin-top: 25px;
+  font-weight: bold;
+  padding-top: 15px;
+  border-top: 2px dashed #e0e0e0; /* Línea punteada para el total */
 }
 
-.form-pago {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #dcdcdc;
+.total-price strong {
+  font-size: 1.8rem;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.8rem;
-  font-size: 1rem;
+
+/* Mensaje de carrito vacío */
+.empty-cart-message {
+  text-align: center;
+  font-size: 1.3rem;
+  color: #555;
+  margin-top: 30px;
+  padding: 30px;
+  border: 1px dashed #ccc;
+  border-radius: 12px;
+  background-color: #fdfdfd;
+}
+
+.empty-cart-message i {
+  margin-right: 10px;
+  color: #173788;
+}
+
+.empty-cart-message .action-button {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  background-color: #173788;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
-  color: #2c3e50;
-  user-select: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.empty-cart-message .action-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+
+/* Opciones de pago (radio buttons) */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Espacio entre las opciones de radio */
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  color: #333;
+  cursor: pointer;
+  padding: 10px 15px;
+  background-color: #fcfcfc;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.radio-label:hover {
+  background-color: #f2f2f2;
+  border-color: #173788;
 }
 
 input[type="radio"] {
-  margin-right: 0.6rem;
-  accent-color: #3498db;
-  cursor: pointer;
+  /* Ocultar el radio button nativo */
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-button[type="submit"] {
-  display: block;
+/* Estilo del radio button personalizado */
+.custom-radio {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  margin-right: 15px;
+  position: relative;
+  transition: border-color 0.2s ease;
+  flex-shrink: 0; /* Evita que el radio button se encoja */
+}
+
+.custom-radio::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #173788; /* Color de relleno */
+  transform: translate(-50%, -50%) scale(0); /* Inicialmente oculto */
+  transition: transform 0.2s ease;
+}
+
+/* Cuando el radio button está checked */
+input[type="radio"]:checked + .custom-radio {
+  border-color: #173788; /* Borde al estar seleccionado */
+}
+
+input[type="radio"]:checked + .custom-radio::after {
+  transform: translate(-50%, -50%) scale(1); /* Escala para mostrar el relleno */
+}
+
+.icon-payment {
+  margin-right: 10px;
+  color: #173788;
+  font-size: 1.3rem;
+}
+
+
+/* Botón de confirmar compra */
+.confirm-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 0.8rem 0;
-  margin-top: 1.4rem;
-  background: #3498db;
+  padding: 15px 30px;
+  margin-top: 30px;
+  background-color: #173788; /* Color principal */
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 1.1rem;
-  font-weight: 600;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button[type="submit"]:hover:not(:disabled) {
-  background: #2980b9;
+.confirm-button:hover:not(:disabled) {
+  background-color: #0056b3; /* Un azul más oscuro para el hover */
+  transform: translateY(-2px);
 }
 
-button[type="submit"]:disabled {
-  background: #a0c4db;
+.confirm-button:disabled {
+  background-color: #a0c4db; /* Color más claro para deshabilitado */
   cursor: not-allowed;
+  opacity: 0.8;
 }
 
-.error {
-  margin-top: 1.5rem;
-  padding: 0.9rem;
-  background-color: #e74c3c;
-  color: white;
-  border-radius: 6px;
-  font-weight: 600;
-  text-align: center;
+.confirm-button i {
+  margin-right: 10px;
+  font-size: 1.4rem;
 }
 
-.success {
-  margin-top: 1.5rem;
-  padding: 0.9rem;
-  background-color: #27ae60;
-  color: white;
-  border-radius: 6px;
-  font-weight: 600;
+/* Mensajes de error/éxito */
+.message-box {
+  margin-top: 25px;
+  padding: 18px;
+  border-radius: 8px;
+  font-weight: bold;
   text-align: center;
-  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.message-box i {
+  margin-right: 12px;
+  font-size: 1.3rem;
+}
+
+.error-message {
+  background-color: #ffebeb; /* Rojo suave */
+  color: #dc3545; /* Rojo de error */
+  border: 1px solid #dc3545;
+}
+
+.success-message {
+  background-color: #e6ffe6; /* Verde suave */
+  color: #28a745; /* Verde de éxito */
+  border: 1px solid #28a745;
+}
+
+/* Media Queries para responsividad */
+@media (max-width: 768px) {
+  .main-content-box {
+    padding: 30px;
+  }
+  .page-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  .section-title {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+  .section-title i {
+    font-size: 1.3rem;
+  }
+  .item-list-item {
+    font-size: 0.95rem;
+    padding: 12px 15px;
+  }
+  .total-price {
+    font-size: 1.3rem;
+  }
+  .total-price strong {
+    font-size: 1.6rem;
+  }
+  .radio-label {
+    font-size: 1rem;
+    padding: 8px 12px;
+  }
+  .custom-radio {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+  }
+  .custom-radio::after {
+    width: 9px;
+    height: 9px;
+  }
+  .icon-payment {
+    font-size: 1.1rem;
+    margin-right: 8px;
+  }
+  .confirm-button {
+    font-size: 1.1rem;
+    padding: 12px 25px;
+  }
+  .confirm-button i {
+    font-size: 1.2rem;
+  }
+  .message-box {
+    font-size: 1rem;
+    padding: 15px;
+  }
+  .message-box i {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content-box {
+    padding: 20px;
+  }
+  .page-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
+  .section-title {
+    font-size: 1.4rem;
+  }
+  .section-title i {
+    font-size: 1.2rem;
+  }
+  .item-list-item {
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+    justify-content: flex-start;
+    gap: 5px 10px;
+  }
+  .item-name {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  .item-quantity, .item-price, .item-subtotal {
+    margin-left: 0;
+  }
+  .total-price {
+    font-size: 1.2rem;
+  }
+  .total-price strong {
+    font-size: 1.5rem;
+  }
+  .confirm-button {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
 }
 </style>

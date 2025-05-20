@@ -1,15 +1,14 @@
 <template>
   <div class="page-container">
-    <!-- Carrusel -->
-      <div class="carousel-container">
-        <div class="carousel" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
-          <div class="carousel-slide" v-for="(img, index) in imagenesCarrusel" :key="index">
-            <img :src="img" alt="Slide" class="carousel-image" />
-          </div>
+    <div class="carousel-container">
+      <div class="carousel" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
+        <div class="carousel-slide" v-for="(img, index) in imagenesCarrusel" :key="index">
+          <img :src="img" alt="Slide" class="carousel-image" />
         </div>
-        <button class="carousel-btn prev" @click="prevSlide">&#10094;</button>
-        <button class="carousel-btn next" @click="nextSlide">&#10095;</button>
       </div>
+      <button class="carousel-btn prev" @click="prevSlide">&#10094;</button>
+      <button class="carousel-btn next" @click="nextSlide">&#10095;</button>
+    </div>
 
 
     <div class="event-section">
@@ -17,20 +16,20 @@
       <p class="section-subtitle">Explora nuestros eventos y encuentra el que más te gusta:</p>
 
       <div class="events-grid">
-  <div v-for="evento in eventos" :key="evento.id" class="event-card-link">
-    <div class="card event-card">
-      <router-link :to="`/detalle-evento/${evento.id}`" class="image-container">
-        <img :src="getImageUrl(evento.imagen)" class="card-img-top event-image" alt="Imagen evento">
-        <div class="overlay">
-          <p class="event-title">{{ evento.titulo }}</p>
-          <p class="event-description">{{ evento.descripcion }}</p>
-        </div>
-        <p class="event-date">{{ formatearFecha(evento.fecha) }}</p>
+        <div v-for="evento in eventos" :key="evento.id" class="event-card-link">
+          <div class="card event-card">
+            <router-link :to="`/detalle-evento/${evento.id}`" class="image-container">
+              <img :src="getImageUrl(evento.imagen)" class="card-img-top event-image" alt="Imagen evento">
+              <div class="overlay">
+                <p class="event-title">{{ evento.titulo }}</p>
+                <p class="event-description">{{ evento.descripcion }}</p>
+              </div>
+              <p class="event-date">{{ formatearFecha(evento.fecha) }}</p>
 
-      </router-link>
-    </div>
-  </div>
-</div>
+            </router-link>
+          </div>
+        </div>
+      </div>
 
     </div>
 
@@ -41,7 +40,7 @@
         </div>
         <div class="footer-column">
           <h3>Categorías</h3>
-          <ul>
+          <ul class="footer-list">
             <li>Conciertos</li>
             <li>Deportes</li>
             <li>Culturales</li>
@@ -51,7 +50,7 @@
         </div>
         <div class="footer-column">
           <h3>Ayuda</h3>
-          <ul>
+          <ul class="footer-list">
             <li>Contáctanos</li>
             <li>Información de eventos</li>
             <li>Lugares y horarios</li>
@@ -60,7 +59,7 @@
         </div>
         <div class="footer-column">
           <h3>Legal</h3>
-          <ul>
+          <ul class="footer-list">
             <li>Política de privacidad</li>
             <li>Términos y condiciones</li>
             <li>Protección de datos</li>
@@ -71,17 +70,17 @@
     </footer>
   </div>
   <a
-  href="https://wa.me/573205063020"
-  target="_blank"
-  class="whatsapp-float"
-  aria-label="Chat en WhatsApp"
->
-  <img
-    src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-    alt="WhatsApp"
-    class="whatsapp-icon"
-  />
-</a>
+    href="https://wa.me/573205063020"
+    target="_blank"
+    class="whatsapp-float"
+    aria-label="Chat en WhatsApp"
+  >
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+      alt="WhatsApp"
+      class="whatsapp-icon"
+    />
+  </a>
 
 </template>
 
@@ -354,10 +353,25 @@ export default {
 .footer-columns {
   display: flex;
   justify-content: space-around;
+  align-items: flex-start; /* Alinea los encabezados en la parte superior */
+}
+
+.footer-column {
+  text-align: center; /* Centra el contenido de cada columna */
 }
 
 .footer-column h3 {
   font-size: 1.2rem;
+  margin-bottom: 10px; /* Espacio debajo del título */
 }
 
+.footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-list li {
+  margin-bottom: 5px;
+}
 </style>
