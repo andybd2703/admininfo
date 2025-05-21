@@ -66,17 +66,22 @@ router.delete('/remove', async (req, res) => {
 router.get('/verificar/:usuario_id/:evento_id', async (req, res) => {
   const { usuario_id, evento_id } = req.params;
 
-  // Validar que el usuario_id y evento_id estén presentes
-  if (!usuario_id || !evento_id) {
+  // Validación más estricta para evitar strings 'null', vacíos, o undefined
+  if (
+    !usuario_id || usuario_id === 'null' || usuario_id.trim() === '' ||
+    !evento_id || evento_id === 'null' || evento_id.trim() === ''
+  ) {
     return res.status(400).json({ error: 'Faltan datos: usuario_id o evento_id' });
   }
 
   try {
-    // Crear la conexión a la base de datos
     const connection = await createConnection();
 
-    // Verificar si el evento está en los favoritos del usuario
-    const [favorite] = await connection.query('SELECT * FROM favoritos WHERE usuario_id = ? AND evento_id = ?', [usuario_id, evento_id]);
+    // Usamos el destructuring correcto para mysql2/promise
+    const [favorite] = await connection.query(
+      'SELECT * FROM favoritos WHERE usuario_id = ? AND evento_id = ?',
+      [usuario_id, evento_id]
+    );
 
     if (favorite.length > 0) {
       return res.status(200).json({ isFavorito: true });
@@ -88,6 +93,7 @@ router.get('/verificar/:usuario_id/:evento_id', async (req, res) => {
     res.status(500).json({ error: 'Error al verificar si es favorito' });
   }
 });
+
 
 // Ruta para obtener todos los eventos favoritos de un usuario con los detalles del evento
 router.get('/:usuario_id', async (req, res) => {

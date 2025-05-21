@@ -27,7 +27,7 @@
 
         <div class="form-group">
           <label for="fecha"><i class="fas fa-calendar-alt"></i> Fecha:</label>
-          <p class="current-info" v-if="evento.fecha">Fecha actual: <span class="info-value">{{ formatoFecha(evento.fecha) }}</span></p>
+
           <input type="date" id="fecha" v-model="evento.fecha" required />
         </div>
 
@@ -111,23 +111,26 @@ export default {
     });
 
     const cargarEvento = async () => {
-      try {
-        const token = localStorage.getItem('token'); // Asumiendo que necesitas un token para esta ruta
-        const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  try {
+    const token = localStorage.getItem('token');
+    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
-        const response = await axios.get(`http://localhost:3000/api/events/${eventoId}`, config);
-        // Asegúrate de que los booleanos se manejen correctamente si vienen como 0/1 de la DB
-        const data = response.data;
-        data.vender_comida = Boolean(data.vender_comida);
-        data.vender_bebidas_alcoholicas = Boolean(data.vender_bebidas_alcoholicas);
+    const response = await axios.get(`http://localhost:3000/api/events/${eventoId}`, config);
+    const data = response.data;
 
-        Object.assign(evento, data);
-      } catch (error) {
-        alert('Error al cargar el evento. Asegúrate de que el ID es correcto y tienes permisos.');
-        console.error(error);
-        router.push('/mis-eventos'); // Redirige si el evento no se carga
-      }
-    };
+    // ⚠️ Asegúrate que la fecha sea solo 'YYYY-MM-DD' para el input
+    data.fecha = data.fecha ? data.fecha.slice(0, 10) : '';
+    data.vender_comida = Boolean(data.vender_comida);
+    data.vender_bebidas_alcoholicas = Boolean(data.vender_bebidas_alcoholicas);
+
+    Object.assign(evento, data);
+  } catch (error) {
+    alert('Error al cargar el evento. Asegúrate de que el ID es correcto y tienes permisos.');
+    console.error(error);
+    router.push('/mis-eventos');
+  }
+};
+
 
     const editarEvento = async () => {
       try {

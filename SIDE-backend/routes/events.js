@@ -96,14 +96,15 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
     vender_bebidas_alcoholicas
   } = req.body;
 
-  const imagen = req.file ? req.file.filename : null;
-
   try {
     const evento = await Evento.getById(id);
 
     if (!evento) {
       return res.status(404).json({ message: 'Evento no encontrado' });
     }
+
+    // ✅ Si no se sube una nueva imagen, usar la existente
+    const imagen = req.file ? req.file.filename : evento.imagen;
 
     const result = await Evento.update(
       id,
@@ -126,6 +127,7 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
     res.status(500).json({ message: 'Error al actualizar evento', error: err.message });
   }
 });
+
 
 // Ruta para eliminar un evento (sin verificación de usuario)
 router.delete('/:id', async (req, res) => {
