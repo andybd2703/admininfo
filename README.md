@@ -37,4 +37,17 @@ El backend de Express.js expone API RESTful organizadas por dominio funcional:
 /api/carrito: Gestión del carrito de compra
 /api/compra: Procesamiento de compras y generación de facturas
 /api/favoritos: Gestión de favoritos del usuario
-/uploads/*: Servicio de archivos estáticos para imágenes subidas
+/uploads/*: Servicio de archivos estáticos para imágenes subidas.
+
+->Esta guía proporciona instrucciones paso a paso para configurar y ejecutar la plataforma de gestión de eventos SIDE localmente. Abarca los prerrequisitos, la instalación, la configuración y la ejecución de los componentes frontend y backend del sistema.
+
+Para obtener información sobre la arquitectura general del sistema y la pila tecnológica, consulte Arquitectura del sistema. Para obtener documentación detallada de la API necesaria durante el desarrollo, consulte la Referencia de la API.
+
+->Prerrequisitos
+Antes de configurar la plataforma SIDE, asegúrese de tener instalados los siguientes componentes en su equipo de desarrollo:
+
+Requisito Versión Propósito
+Node.js 16.x o superior Entorno de ejecución para frontend y backend
+npm 8.x o superior Gestor de paquetes
+MySQL 8.x o superior Servidor de bases de datos
+GitHub Última versión Control.
