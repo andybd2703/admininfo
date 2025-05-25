@@ -251,7 +251,7 @@ formatCurrency(valor) {
 <style scoped>
 .event-detail {
   padding: 2rem;
-  background: #f4f4f9;
+  background: #e6ecf5;
   font-family: 'Segoe UI', sans-serif;
   color: #333;
 }

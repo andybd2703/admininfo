@@ -115,15 +115,15 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url('https://i.imgur.com/6IlTFsk.jpeg'); /* Misma imagen de fondo */
   background-size: cover;
+  background-color: #e6ecf5;
   background-position: center;
   padding: 20px; /* Añadido para espacio en pantallas pequeñas */
   box-sizing: border-box; /* Para que el padding no añada al width */
 }
 
 .cart-box {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 1);
   padding: 50px;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);

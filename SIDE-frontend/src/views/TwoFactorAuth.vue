@@ -1,5 +1,15 @@
 <template>
   <div class="login-container">
+    <!-- Fondo a la izquierda con logo encima -->
+    <div class="background-side">
+      <div class="overlay">
+        <div class="logo-container">
+          <img src="https://i.imgur.com/hKU4GaP.png" alt="Logo de la empresa" class="company-logo">
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario a la derecha -->
     <div class="login-box">
       <h2 class="login-title">Autenticación de Doble Factor</h2>
       <form @submit.prevent="verificarCodigo" class="login-form">
@@ -38,15 +48,12 @@
         <!-- Enlace para reenviar código -->
         <div v-if="codigoEnviado" class="register-link">
           ¿No recibió el código?
-          <a @click="reenviarCodigo" class="register-button" style="cursor:pointer">
-            Reenviar código
-          </a>
+          <a @click="reenviarCodigo" class="register-button" style="cursor:pointer">Reenviar código</a>
         </div>
       </form>
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -69,9 +76,7 @@ export default {
           return;
         }
 
-        await axios.post('http://localhost:3000/api/auth/2fa/send-code', {
-          userId
-        });
+        await axios.post('http://localhost:3000/api/auth/2fa/send-code', { userId });
 
         this.codigoEnviado = true;
         this.errorMessage = '';
@@ -90,9 +95,7 @@ export default {
           return;
         }
 
-        await axios.post('http://localhost:3000/api/auth/resend-2fa-code', {
-          userId
-        });
+        await axios.post('http://localhost:3000/api/auth/resend-2fa-code', { userId });
 
         this.errorMessage = '';
         alert('Código reenviado al correo 📬');
@@ -103,48 +106,37 @@ export default {
     },
 
     async verificarCodigo() {
-  try {
-    const userId = localStorage.getItem('pending2FAUserId');
-    if (!userId) {
-      this.errorMessage = 'No se encontró el usuario. Intente iniciar sesión de nuevo.';
-      return;
+      try {
+        const userId = localStorage.getItem('pending2FAUserId');
+        if (!userId) {
+          this.errorMessage = 'No se encontró el usuario. Intente iniciar sesión de nuevo.';
+          return;
+        }
+
+        if (!this.codigo || this.codigo.length !== 6) {
+          this.errorMessage = 'Ingrese un código válido de 6 dígitos.';
+          return;
+        }
+
+        const response = await axios.post('http://localhost:3000/api/auth/2fa/validate', {
+          userId,
+          code: this.codigo
+        });
+
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('usuario', response.data.usuario.username);
+        localStorage.setItem('rol', response.data.usuario.role);
+        localStorage.setItem('userId', response.data.usuario.id);
+        emitter.emit('auth-change');
+
+        alert('Código verificado correctamente. ¡Bienvenido! 🎉');
+        this.$router.push('/');
+        this.errorMessage = '';
+      } catch (error) {
+        console.error(error);
+        this.errorMessage = error.response?.data?.message || 'Error al verificar el código';
+      }
     }
-
-    if (!this.codigo || this.codigo.length !== 6) {
-      this.errorMessage = 'Ingrese un código válido de 6 dígitos.';
-      return;
-    }
-
-    const response = await axios.post('http://localhost:3000/api/auth/2fa/validate', {
-      userId,
-      code: this.codigo
-    });
-
-    // Si llegó hasta acá, el código es correcto y recibimos el token
-    // Guardar token, limpiar estado y redirigir o hacer lo que corresponda
-    console.log(response.data);  
-    localStorage.setItem('token', response.data.token);
-      localStorage.setItem('usuario', response.data.usuario.username);
-      localStorage.setItem('rol', response.data.usuario.role);
-      localStorage.setItem('userId', response.data.usuario.id);
-      emitter.emit('auth-change');
-      this.usuario = { email: '', password: '' };
-
-      this.$router.push('/');
-
-      
-    this.errorMessage = '';
-    alert('Código verificado correctamente. ¡Bienvenido! 🎉');
-
-    // Por ejemplo, redirigir a la página principal
-    this.$router.push('/');
-
-  } catch (error) {
-    console.error(error);
-    this.errorMessage = error.response?.data?.message || 'Error al verificar el código';
-  }
-}
-
   }
 };
 </script>
@@ -152,23 +144,49 @@ export default {
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
-/* Usa los mismos estilos que ya tienes */
 .login-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.background-side {
+  flex: 1;
+  background-image: url('https://images.unsplash.com/photo-1542866263-77e2cdc46889?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.overlay {
+  background-color: rgba(2, 41, 121, 0.6); 
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-image: url('https://i.imgur.com/6IlTFsk.jpeg');
-  background-size: cover;
-  background-position: center;
 }
 
+.logo-container {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+ background-color: transparent;  /* opcional para contraste */
+}
+.company-logo {
+  max-width: 100%;
+  height: auto;
+  filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+}
+
+
 .login-box {
-  background-color: rgba(255, 255, 255, 0.9);
+  flex: 1;
+  background-color: #fff;
   padding: 50px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .login-title {

@@ -1,9 +1,19 @@
 <template>
   <div class="login-container">
+
+    <!-- Fondo a la izquierda con logo encima -->
+    <div class="background-side">
+      <div class="overlay">
+        <div class="logo-container">
+          <img src="https://i.imgur.com/hKU4GaP.png" alt="Logo de la empresa" class="company-logo">
+        </div>
+      </div>
+    </div>
+
+    <!-- Login a la derecha -->
     <div class="login-box">
       <h2 class="login-title">Iniciar Sesión</h2>
-      <form @submit.prevent="iniciarSesion" class="login-form">
-        <div class="form-group">
+      <form @submit.prevent="iniciarSesion" class="login-form"><div class="form-group">
           <label for="email" class="form-label">Correo</label>
           <div class="input-group">
             <input
@@ -45,17 +55,13 @@
 
         <button type="submit" class="btn btn-primary btn-xl login-button">Iniciar Sesión</button>
 
-        <!-- Mostrar mensaje de error si existe -->
         <div v-if="errorMessage" class="error-message">
           <p>{{ errorMessage }}</p>
         </div>
 
         <div class="register-link">
           ¿No tiene una cuenta?
-          <router-link to="/registro" class="register-button">
-            Registrese
-          </router-link>
-          
+          <router-link to="/registro" class="register-button">Regístrese</router-link>
         </div>
       </form>
     </div>
@@ -118,25 +124,51 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos del componente */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 .login-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-image: url('https://images.pexels.com/photos/23273/pexels-photo.jpg');
-  background-size: cover;
-  background-position: center;
+  height: 100vh;
 }
 
+/* Fondo a la izquierda */
+.background-side {
+  flex: 1;
+  background-image: url('https://images.unsplash.com/photo-1542866263-77e2cdc46889?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.background-side::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(2, 41, 121, 0.6); /* Azul oscuro translúcido */
+  z-index: 1;
+}
+
+.background-side > * {
+  position: relative;
+  z-index: 2; /* Para que el contenido esté encima del overlay */
+}
+
+
+/* Formulario a la derecha */
 .login-box {
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 50px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  width: 500px;
+  flex: 1;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .login-title {
@@ -250,7 +282,6 @@ export default {
   text-decoration: underline;
 }
 
-/* Estilos para mostrar el mensaje de error */
 .error-message {
   background-color: #f8d7da;
   color: #721c24;
@@ -259,4 +290,19 @@ export default {
   border-radius: 8px;
   text-align: center;
 }
+.logo-container {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+ background-color: transparent;  /* opcional para contraste */
+}
+.company-logo {
+  max-width: 100%;
+  height: auto;
+  filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+}
+
+
 </style>

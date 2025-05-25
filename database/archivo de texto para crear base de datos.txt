@@ -18,8 +18,15 @@ CREATE TABLE users (
   id_number VARCHAR(50) NOT NULL UNIQUE,
   phone_number VARCHAR(20) NOT NULL,
   role ENUM('admin', 'usuario', 'organizador') NOT NULL DEFAULT 'usuario',
+  
+  -- Nuevas columnas para 2FA:
+  two_factor_code VARCHAR(6) DEFAULT NULL,
+  two_factor_expires BIGINT DEFAULT NULL,
+  two_factor_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+  
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 CREATE TABLE eventos (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,11 +41,13 @@ CREATE TABLE eventos (
   precio_general_full DECIMAL(10, 2) NOT NULL,
   vender_comida BOOLEAN NOT NULL,
   vender_bebidas_alcoholicas BOOLEAN NOT NULL,
+  categoria ENUM('musica', 'arte', 'entretenimiento', 'teatro') NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   usuario_id INT NOT NULL,
   FOREIGN KEY (usuario_id) REFERENCES users(id)
 );
+
 
 CREATE TABLE favoritos (
   id INT AUTO_INCREMENT PRIMARY KEY,

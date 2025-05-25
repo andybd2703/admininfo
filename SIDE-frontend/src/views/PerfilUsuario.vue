@@ -1,68 +1,74 @@
 <template>
-  <div class="user-profile">
-    <h1>👤 Perfil de Usuario</h1>
+  <div class="form-page-wrapper">
+    <div class="form-main-box">
+      <h1 class="form-title">Perfil de Usuario</h1>
 
-    <div v-if="user">
-      <form @submit.prevent="actualizarUsuario">
-        <!-- Campos existentes -->
+      <div v-if="user">
+        <form @submit.prevent="actualizarUsuario" class="user-edit-form">
 
-        <label>
-          Nombre:
-          <input type="text" v-model="user.first_name" required />
-        </label>
+          <div class="form-group">
+            <label><i class="fas fa-user"></i> Nombre:</label>
+            <input type="text" v-model="user.first_name" required />
+          </div>
 
-        <label>
-          Apellidos:
-          <input type="text" v-model="user.last_name" required />
-        </label>
+          <div class="form-group">
+            <label><i class="fas fa-user-tag"></i> Apellidos:</label>
+            <input type="text" v-model="user.last_name" required />
+          </div>
 
-        <label>
-          Usuario:
-          <input type="text" v-model="user.username" required />
-        </label>
+          <div class="form-group">
+            <label><i class="fas fa-user-circle"></i> Usuario:</label>
+            <input type="text" v-model="user.username" required />
+          </div>
 
-        <label>
-          Email:
-          <input type="email" v-model="user.email" required />
-        </label>
+          <div class="form-group">
+            <label><i class="fas fa-envelope"></i> Email:</label>
+            <input type="email" v-model="user.email" required />
+          </div>
 
-        <label>
-          Fecha de nacimiento:
-          <input type="date" v-model="user.birthdate" required />
-        </label>
+          <div class="form-group">
+            <label><i class="fas fa-birthday-cake"></i> Fecha de nacimiento:</label>
+            <input type="date" v-model="user.birthdate" required />
+          </div>
 
-        <label>
-          Número de identificación:
-          <input type="text" v-model="user.id_number" required />
-        </label>
+          <div class="form-group">
+            <label><i class="fas fa-id-card"></i> Número de identificación:</label>
+            <input type="text" v-model="user.id_number" required />
+          </div>
 
-        <label>
-          Teléfono:
-          <input type="tel" v-model="user.phone_number" required />
-        </label>
+          <div class="form-group">
+            <label><i class="fas fa-phone"></i> Teléfono:</label>
+            <input type="tel" v-model="user.phone_number" required />
+          </div>
 
-        <label>
-          Rol:
-          <input type="text" v-model="user.role" disabled />
-        </label>
+          <div class="form-group">
+            <label><i class="fas fa-user-shield"></i> Rol:</label>
+            <input type="text" v-model="user.role" disabled />
+          </div>
 
-        <!-- NUEVO: Activar/desactivar 2FA -->
-        <label>
-          <input
-            type="checkbox"
-            :checked="twoFactorEnabled"
-            @change="toggleTwoFactor($event.target.checked)"
-          />
-          Activar autenticación de doble factor (2FA)
-        </label>
-        <small>Al activar, se requerirá un código enviado por email para iniciar sesión.</small>
+          <div class="form-group checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                :checked="twoFactorEnabled"
+                @change="toggleTwoFactor($event.target.checked)"
+              />
+              <span class="checkbox-label"><i class="fas fa-lock"></i> Activar autenticación de doble factor (2FA)</span>
+            </label>
+            <small>Al activar, se requerirá un código enviado por email para iniciar sesión.</small>
+          </div>
 
-        <button type="submit">Guardar cambios</button>
-      </form>
-    </div>
+          <div class="form-actions">
+            <button type="submit" class="submit-button">
+              <i class="fas fa-save"></i> Guardar cambios
+            </button>
+          </div>
+        </form>
+      </div>
 
-    <div v-else>
-      <p>Cargando datos del usuario...</p>
+      <div v-else>
+        <p>Cargando datos del usuario...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -113,7 +119,7 @@ export default {
         const token = localStorage.getItem('token')
         await axios.post(
           'http://localhost:3000/api/auth/2fa/enable',
-          { userId: this.user.id, enabled }, // ojo backend tiene que soportar `enabled`
+          { userId: this.user.id, enabled },
           { headers: { Authorization: `Bearer ${token}` } }
         )
         this.twoFactorEnabled = enabled
@@ -133,44 +139,86 @@ export default {
 </script>
 
 <style scoped>
-.user-profile {
-  max-width: 600px;
-  margin: 0 auto;
+.form-page-wrapper {
+  display: flex;
+  justify-content: center;
   padding: 2rem;
-  background: #f7f7f7;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: #e6ecf5;
 }
 
-.user-profile h1 {
-  text-align: center;
-  color: #333;
-}
-
-.user-profile label {
-  display: block;
-  margin: 0.8rem 0;
-}
-
-.user-profile input {
+.form-main-box {
   width: 100%;
-  padding: 0.5rem;
+  max-width: 700px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+}
+
+.form-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.user-edit-form .form-group {
+  margin-bottom: 1.2rem;
+}
+
+.user-edit-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #444;
+}
+
+.user-edit-form input {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
   font-size: 1rem;
-  margin-top: 0.3rem;
-  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s;
 }
 
-.user-profile button {
-  margin-top: 1.5rem;
-  padding: 0.7rem 1.2rem;
-  background-color: #4caf50;
+.user-edit-form input:focus {
+  border-color: #6c63ff;
+  outline: none;
+}
+
+.checkbox-group {
+  margin-top: 1rem;
+}
+
+.checkbox-label {
+  margin-left: 0.5rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.submit-button {
+  background-color: #0056b3;
   color: white;
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.user-profile button:hover {
-  background-color: #45a049;
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+small {
+  font-size: 0.85rem;
+  color: #666;
 }
 </style>

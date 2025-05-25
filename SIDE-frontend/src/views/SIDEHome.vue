@@ -104,14 +104,25 @@ export default {
 
 <style scoped>
 
+:global(body), :global(html) {
+  margin: 0;
+  padding: 0;
+}
 
+.page-container {
+  padding: 0;
+  margin: 0;
+}
 
 .carousel-container {
   position: relative;
-  width: 100%;
-  height: 400px;
+  width: 100vw; /* 100% del viewport */
+  height: 700px;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
+
 
 .carousel {
   display: flex;
@@ -120,17 +131,15 @@ export default {
 }
 
 .carousel-slide {
-  min-width: 100%;
+  min-width: 100vw; /* Para que cada imagen también ocupe todo el viewport */
   height: 100%;
 }
 
 .carousel-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  background-color: #e6ecf5;
+  object-fit: cover; /* Se verá más elegante que contain */
 }
-
 .carousel-btn {
   width: 50px;
   height: 50px;
@@ -160,15 +169,13 @@ export default {
 
 
 .events-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 3 por fila si hay espacio */
   gap: 2rem;
-  overflow-x: auto;
   padding: 2rem 1rem;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  justify-content: flex-start; /* Alinear al inicio */
-  /* ❌ flex-wrap: wrap;  Quitar esta línea */
+  justify-items: center;
 }
+
 .page-container {
   font-family: 'Montserrat', sans-serif;
   background-color: #e6ecf5;

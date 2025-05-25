@@ -208,7 +208,7 @@ export default {
   align-items: flex-start; /* Alinea arriba para que el contenido fluya */
   min-height: 100vh; /* Ocupa al menos toda la altura de la ventana */
   padding: 40px 20px; /* Padding para el contenido general */
-  background-color: #f0f2f5; /* Un color de fondo suave */
+  background-color: #e6ecf5; /* Un color de fondo suave */
   box-sizing: border-box;
 }
 
