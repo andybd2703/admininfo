@@ -5,21 +5,21 @@ class Evento {
   static async create(
     nombre, descripcion, imagen, fecha, hora, edad_minima,
     precio_platino_full, precio_vip_full, precio_general_full,
-    vender_comida, vender_bebidas_alcoholicas, usuario_id
+    vender_comida, vender_bebidas_alcoholicas, categoria, usuario_id
   ) {
     const db = await getDB();
     const query = `
       INSERT INTO eventos (
         nombre, descripcion, imagen, fecha, hora, edad_minima,
         precio_platino_full, precio_vip_full, precio_general_full,
-        vender_comida, vender_bebidas_alcoholicas, usuario_id
+        vender_comida, vender_bebidas_alcoholicas, categoria, usuario_id
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [result] = await db.query(query, [
       nombre, descripcion, imagen, fecha, hora, edad_minima,
       precio_platino_full, precio_vip_full, precio_general_full,
-      vender_comida, vender_bebidas_alcoholicas, usuario_id
+      vender_comida, vender_bebidas_alcoholicas, categoria, usuario_id
     ]);
     return result;
   }
@@ -48,7 +48,7 @@ class Evento {
   static async update(
     id, nombre, descripcion, imagen, fecha, hora, edad_minima,
     precio_platino_full, precio_vip_full, precio_general_full,
-    vender_comida, vender_bebidas_alcoholicas
+    vender_comida, vender_bebidas_alcoholicas, categoria
   ) {
     const db = await getDB();
 
@@ -64,13 +64,14 @@ class Evento {
         precio_vip_full = ?,
         precio_general_full = ?,
         vender_comida = ?,
-        vender_bebidas_alcoholicas = ?
+        vender_bebidas_alcoholicas = ?,
+        categoria = ?
       WHERE id = ?
     `;
     const [result] = await db.query(query, [
       nombre, descripcion, imagen, fecha, hora, edad_minima,
       precio_platino_full, precio_vip_full, precio_general_full,
-      vender_comida, vender_bebidas_alcoholicas, id
+      vender_comida, vender_bebidas_alcoholicas, categoria, id
     ]);
     return result;
   }

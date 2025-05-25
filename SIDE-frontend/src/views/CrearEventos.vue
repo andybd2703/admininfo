@@ -18,6 +18,16 @@
           <label for="image"><i class="fas fa-image"></i> Imagen del Evento:</label>
           <input type="file" id="image" @change="handleImageUpload" required />
         </div>
+          <div class="form-group">
+          <label for="category"><i class="fas fa-tags"></i> Categoría del Evento:</label>
+          <select id="category" v-model="event.category" required>
+            <option disabled value="">Selecciona una categoría</option>
+            <option value="musica">Música</option>
+            <option value="arte">Arte</option>
+            <option value="entretenimiento">Entretenimiento</option>
+            <option value="teatro">Teatro</option>
+          </select>
+        </div>
 
         <div class="form-group">
           <label for="date"><i class="fas fa-calendar-alt"></i> Fecha:</label>
@@ -94,6 +104,7 @@ export default {
         time: '',
         place: '',
         age_limit: 0,
+        category: '',
         tickets: {
           platino: { full_price: '', discount_price: '' },
           vip: { full_price: '', discount_price: '' },
@@ -132,6 +143,8 @@ export default {
         formData.append('vender_comida', this.event.faq[0].answer ? 1 : 0);
         formData.append('vender_bebidas_alcoholicas', this.event.faq[1].answer ? 1 : 0);
         formData.append('usuario_id', usuario_id);
+        formData.append('categoria', this.event.category);
+
         if (this.event.image) {
           formData.append('imagen', this.event.image); // Adjuntar la imagen
         }

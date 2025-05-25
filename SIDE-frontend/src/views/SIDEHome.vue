@@ -33,41 +33,7 @@
 
     </div>
 
-    <footer class="main-footer">
-      <div class="footer-columns">
-        <div class="footer-column">
-          <h3>SIDE USC</h3>
-        </div>
-        <div class="footer-column">
-          <h3>Categorías</h3>
-          <ul class="footer-list">
-            <li>Conciertos</li>
-            <li>Deportes</li>
-            <li>Culturales</li>
-            <li>Académicos</li>
-            <li>Empresariales</li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h3>Ayuda</h3>
-          <ul class="footer-list">
-            <li>Contáctanos</li>
-            <li>Información de eventos</li>
-            <li>Lugares y horarios</li>
-            <li>Preguntas frecuentes</li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h3>Legal</h3>
-          <ul class="footer-list">
-            <li>Política de privacidad</li>
-            <li>Términos y condiciones</li>
-            <li>Protección de datos</li>
-            <li>SIC</li>
-          </ul>
-        </div>
-      </div>
-    </footer>
+    
   </div>
   <a
     href="https://wa.me/573205063020"
@@ -161,22 +127,28 @@ export default {
 .carousel-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background-color: #e6ecf5;
 }
 
 .carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   background-color: rgba(23, 55, 136, 0.6);
   color: white;
   border: none;
-  padding: 1rem;
   cursor: pointer;
   font-size: 2rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 2;
-  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 
 .carousel-btn.prev {
   left: 10px;
@@ -199,7 +171,7 @@ export default {
 }
 .page-container {
   font-family: 'Montserrat', sans-serif;
-  background-color: #f8f9fa;
+  background-color: #e6ecf5;
 }
 
 .whatsapp-float {
@@ -343,35 +315,5 @@ export default {
   scroll-snap-align: start;
 }
 
-/* Footer */
-.main-footer {
-  background-color: #173788;
-  color: #fff;
-  padding: 30px;
-}
 
-.footer-columns {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start; /* Alinea los encabezados en la parte superior */
-}
-
-.footer-column {
-  text-align: center; /* Centra el contenido de cada columna */
-}
-
-.footer-column h3 {
-  font-size: 1.2rem;
-  margin-bottom: 10px; /* Espacio debajo del título */
-}
-
-.footer-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footer-list li {
-  margin-bottom: 5px;
-}
 </style>

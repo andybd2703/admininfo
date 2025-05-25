@@ -4,6 +4,8 @@
 
     <div v-if="user">
       <form @submit.prevent="actualizarUsuario">
+        <!-- Campos existentes -->
+
         <label>
           Nombre:
           <input type="text" v-model="user.first_name" required />
@@ -23,7 +25,6 @@
           Email:
           <input type="email" v-model="user.email" required />
         </label>
-        
 
         <label>
           Fecha de nacimiento:
@@ -43,8 +44,18 @@
         <label>
           Rol:
           <input type="text" v-model="user.role" disabled />
-          <!-- Si el rol no debe editarse, lo dejamos disabled -->
         </label>
+
+        <!-- NUEVO: Activar/desactivar 2FA -->
+        <label>
+          <input
+            type="checkbox"
+            :checked="twoFactorEnabled"
+            @change="toggleTwoFactor($event.target.checked)"
+          />
+          Activar autenticación de doble factor (2FA)
+        </label>
+        <small>Al activar, se requerirá un código enviado por email para iniciar sesión.</small>
 
         <button type="submit">Guardar cambios</button>
       </form>
@@ -63,6 +74,8 @@ export default {
   data() {
     return {
       user: null,
+      twoFactorEnabled: false,
+      loading2FA: false,
     }
   },
   methods: {
@@ -73,6 +86,7 @@ export default {
           headers: { Authorization: `Bearer ${token}` },
         })
         this.user = response.data
+        this.twoFactorEnabled = this.user.two_factor_enabled || false
       } catch (error) {
         console.error('Error al obtener los datos del usuario:', error)
       }
@@ -81,14 +95,11 @@ export default {
     async actualizarUsuario() {
       try {
         const token = localStorage.getItem('token')
-
-        // Enviar PUT para actualizar el usuario con su ID
         await axios.put(
           `http://localhost:3000/api/usuarios/${this.user.id}`,
           this.user,
           { headers: { Authorization: `Bearer ${token}` } }
         )
-        
         alert('Perfil actualizado correctamente')
       } catch (error) {
         console.error('Error al actualizar el perfil:', error)
@@ -96,9 +107,23 @@ export default {
       }
     },
 
-    formatDate(dateStr) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' }
-      return new Date(dateStr).toLocaleDateString(undefined, options)
+    async toggleTwoFactor(enabled) {
+      try {
+        this.loading2FA = true
+        const token = localStorage.getItem('token')
+        await axios.post(
+          'http://localhost:3000/api/auth/2fa/enable',
+          { userId: this.user.id, enabled }, // ojo backend tiene que soportar `enabled`
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        this.twoFactorEnabled = enabled
+        alert(`2FA ${enabled ? 'activado' : 'desactivado'}`)
+      } catch (error) {
+        alert('Error al cambiar estado 2FA')
+        console.error(error)
+      } finally {
+        this.loading2FA = false
+      }
     },
   },
   mounted() {

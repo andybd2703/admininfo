@@ -116,14 +116,11 @@ export default {
       event.preventDefault();
 
       try {
-        const token = localStorage.getItem('token');
         const usuario_id = localStorage.getItem('userId');
 
-        await axios.delete(`http://localhost:3000/api/favoritos/remove/${usuario_id}/${eventoId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        await axios.delete(`http://localhost:3000/api/favoritos/remove`, {
+            data: { usuario_id: usuario_id, evento_id: eventoId }
+          });
         // Actualiza la lista de eventos después de eliminar
         this.eventos = this.eventos.filter(evento => evento.id !== eventoId);
         // Opcional: mostrar un mensaje de éxito al usuario
@@ -164,7 +161,7 @@ export default {
   align-items: flex-start; /* Alinea arriba para que el contenido fluya */
   min-height: 100vh; /* Ocupa al menos toda la altura de la ventana */
   padding: 40px 20px; /* Padding para el contenido general */
-  background-color: #f0f2f5; /* Un color de fondo suave, en lugar de imagen */
+  background-color: #e6ecf5; /* Un color de fondo suave, en lugar de imagen */
   box-sizing: border-box;
 }
 

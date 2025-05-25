@@ -97,10 +97,13 @@ export default {
     }
   },
   methods: {
-    formatoPrecio(valor) {
-      const numero = Number(valor);
-      return isNaN(numero) ? '0.00' : numero.toFixed(2);
-    },
+         formatoPrecio(valor) {
+    
+  const num = Number(valor);
+  if (isNaN(num)) {
+    return 'Precio no disponible';
+  }
+  return 'COP ' + num.toLocaleString('en-US');},
     async submitCompra() {
       this.error = '';
       this.success = false;
@@ -133,9 +136,20 @@ export default {
         });
 
         if (!response.ok) {
-          const errorData = await response.json(); // Intentar leer el mensaje de error del backend
-          throw new Error(errorData.message || 'Error procesando la compra');
-        }
+  const contentType = response.headers.get('Content-Type');
+  let errorMessage = 'Error procesando la compra';
+
+  if (contentType && contentType.includes('application/json')) {
+    const errorData = await response.json();
+    errorMessage = errorData.message || errorMessage;
+  } else {
+    const text = await response.text();
+    errorMessage = text || errorMessage;
+  }
+
+  throw new Error(errorMessage);
+}
+
 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);

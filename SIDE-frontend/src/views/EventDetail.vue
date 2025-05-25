@@ -43,20 +43,22 @@
                   <th>Precio</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>Platino</td>
-                  <td>{{ evento.precio_platino_full }}</td>
-                </tr>
-                <tr>
-                  <td>VIP</td>
-                  <td>{{ evento.precio_vip_full }}</td>
-                </tr>
-                <tr>
-                  <td>General</td>
-                  <td>{{ evento.precio_general_full }}</td>
-                </tr>
-              </tbody>
+            <tbody>
+  <tr v-if="evento.precio_platino_full !== undefined">
+    <td>Platino</td>
+    <td>{{ formatPrecio(evento.precio_platino_full) }}</td>
+  </tr>
+  <tr v-if="evento.precio_vip_full !== undefined">
+    <td>VIP</td>
+    <td>{{ formatPrecio(evento.precio_vip_full) }}</td>
+  </tr>
+  <tr v-if="evento.precio_general_full !== undefined">
+    <td>General</td>
+    <td>{{ formatPrecio(evento.precio_general_full) }}</td>
+  </tr>
+</tbody>
+
+
             </table>
           </div>
 
@@ -65,29 +67,26 @@
             <ul>
               <li>
                 <strong class="question">¿Edad mínima?</strong>
-                <span class="answer">{{ evento.edad_minima }} años</span>
+                <span class="answer">{{  evento.edad_minima }} años</span>
               </li>
               <li>
                 <strong class="question">¿Se venderá comida?</strong>
-                <span class="answer">{{ evento.vender_comida ? 'Sí' : 'No' }}</span>
+                <span class="answer"> {{ evento.vender_comida ? ' Sí' : ' No' }}</span>
               </li>
               <li>
                 <strong class="question">¿Se venderán bebidas alcohólicas?</strong>
-                <span class="answer">{{ evento.vender_bebidas_alcoholicas ? 'Sí' : 'No' }}</span>
+                <span class="answer"> {{ evento.vender_bebidas_alcoholicas ? ' Sí' : ' No' }}</span>
               </li>
               <li>
                 <strong class="question">¿Apto para personas con movilidad reducida?</strong>
-                <span class="answer">Sí, cuenta con espacios habilitados para personas con movilidad reducida.</span>
+                <span class="answer"> Sí, cuenta con espacios habilitados para personas con movilidad reducida.</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div class="venue-info">
-          <div class="map-preview">
-            <h3 class="map-title">Mapa de las sillas</h3>
-            <img src="https://i.imgur.com/NF8QZZ6.jpeg" alt="Mapa Arena USC">
-          </div>
+          
           <div class="seats-preview">
             <h3 class="seats-title">Vista previa del ARENA USC</h3>
             <img src="https://i.imgur.com/SK3FE5g.jpeg" alt="Distribución de asientos Arena USC">
@@ -134,6 +133,9 @@ export default {
     this.verificarFavorito(eventoId);
   },
   methods: {
+
+
+    
     async obtenerEvento(id) {
       try {
         const response = await axios.get(`http://localhost:3000/api/events/${id}`);
@@ -207,7 +209,15 @@ export default {
         console.error('Error agregando al carrito:', error);
         alert('Ocurrió un error al agregar al carrito.');
       }
-    }
+    },
+   formatPrecio(valor) {
+  const num = Number(valor);
+  if (isNaN(num)) {
+    return 'Precio no disponible';
+  }
+  return 'COP ' + num.toLocaleString('en-US');
+}
+
   }
 };
 </script>
@@ -333,7 +343,7 @@ export default {
 
 /* Sección inferior */
 .bottom-section {
-  background-color: #f0f4fa;
+  background-color: #e6ecf5;
   padding: 20px 15px;
   display: flex;
   flex-direction: column;

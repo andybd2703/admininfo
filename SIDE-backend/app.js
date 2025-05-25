@@ -1,11 +1,13 @@
 // ─────────────────────────────────────────────────────────────
 // IMPORTACIONES
 // ─────────────────────────────────────────────────────────────
+require('dotenv').config();
+
+const dotenv = require('dotenv');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
 const path = require('path');
 
 const authRoutes = require('./routes/auth');

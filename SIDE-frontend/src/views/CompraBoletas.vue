@@ -42,10 +42,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Platino</td><td>{{ evento.precio_platino_full }}</td></tr>
-              <tr><td>VIP</td><td>{{ evento.precio_vip_full }}</td></tr>
-              <tr><td>General</td><td>{{ evento.precio_general_full }}</td></tr>
+              <tr><td>Platino</td><td>{{ formatCurrency(evento.precio_platino_full) }}</td></tr>
+              <tr><td>VIP</td><td>{{ formatCurrency(evento.precio_vip_full) }}</td></tr>
+              <tr><td>General</td><td>{{ formatCurrency(evento.precio_general_full) }}</td></tr>
             </tbody>
+
           </table>
         </div>
 
@@ -190,30 +191,27 @@ export default {
     return;
   }
 
-  const peticiones = [];
+  const itemsAAgregar = [];
 
   for (const categoria in this.cantidades) {
     const cantidad = this.cantidades[categoria];
     if (cantidad > 0) {
-      for (let i = 0; i < cantidad; i++) {
-        peticiones.push(
-          axios.post('http://localhost:3000/api/carrito/add', {
-            usuario_id: usuarioId,
-            evento_id: this.evento.id,
-            categoria: categoria
-          })
-        );
-      }
+      itemsAAgregar.push({
+        usuario_id: usuarioId,
+        evento_id: this.evento.id,
+        categoria,
+        cantidad
+      });
     }
   }
 
-  if (peticiones.length === 0) {
+  if (itemsAAgregar.length === 0) {
     alert('Selecciona al menos una cantidad de boletos para agregar al carrito');
     return;
   }
 
   try {
-    await Promise.all(peticiones);
+    await axios.post('http://localhost:3000/api/carrito/add-multiple', itemsAAgregar);
     alert('¡Boletos agregados al carrito correctamente!');
     this.cantidades = { platino: 0, vip: 0, general: 0 };
   } catch (error) {
@@ -222,8 +220,9 @@ export default {
   }
 }
 
+
 ,
-    calcularPrecio(categoria) {
+calcularPrecio(categoria) {
   const cantidad = this.cantidades[categoria];
   let base = 0;
 
@@ -231,16 +230,17 @@ export default {
   if (categoria === 'vip') base = this.evento.precio_vip_full;
   if (categoria === 'general') base = this.evento.precio_general_full;
 
-  // Aplicar descuento por cantidad
-  const precioUnitario = cantidad >= 5 ? base * 0.9 : base;
-
-  return cantidad * precioUnitario; // Precio total
+  return cantidad * base; // Solo multiplicación simple, nada más
 },
 
-formatCurrency(value) {
-    if (typeof value !== "number") return value;
-    return '$' + value.toFixed(2);
+
+formatCurrency(valor) {
+ const num = Number(valor);
+  if (isNaN(num)) {
+    return 'Precio no disponible';
   }
+  return 'COP ' + num.toLocaleString('en-US');
+}
     
   }
   

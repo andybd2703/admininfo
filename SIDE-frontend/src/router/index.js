@@ -15,8 +15,9 @@ import Compra from '../views/CompraBoletas.vue';
 import favoritos from '../views/Eventosfavoritos.vue';
 import PerfilUsuario from '@/views/PerfilUsuario.vue';
 import FormularioCompra from '@/views/FormularioCompra.vue';
-
-
+import TwoFactorAuth from '@/views/TwoFactorAuth.vue';
+import TerminosYCondiciones from '@/views/TerminosYCondiciones.vue';
+import PoliticaPrivacidad from '@/views/PoliticaPrivacidad.vue';
 // Función para verificar si el usuario está autenticado
 const isAuthenticated = () => {
   return localStorage.getItem('token') !== null;
@@ -40,10 +41,13 @@ const routes = [
   { path: '/admin', component: Admin, meta: { requiresAdmin: true } },
   { path: '/editar-evento/:id', component: EditarEvento, meta: { requiresAuth: true } },
   { path: '/organizador-home', component: OrganizardorHome, meta: { requiresAuth: true } },
-  { path: '/compra/:id', component: Compra },
+  { path: '/compra/:id', component: Compra,  meta: { requiresAuth: true } },
   { path: '/favoritos', component: favoritos,  meta: { requiresAuth: true } },
   { path: '/perfil', component: PerfilUsuario },
-  { path: '/formularioCompra', component: FormularioCompra }
+  { path: '/formularioCompra', component: FormularioCompra },
+  { path: '/2fauth', component: TwoFactorAuth },
+  { path: '/terminos-y-condiciones', component: TerminosYCondiciones },
+  { path: '/politica-privacidad', component: PoliticaPrivacidad }
 
 ];
 

@@ -19,8 +19,9 @@
                 <h3>{{ item.nombre }}</h3>
                 <p>Categoría: {{ item.categoria }}</p>
                 <p>Cantidad: {{ item.cantidad }}</p>
-                <p>Precio unitario: ${{ formatPrice(item.precio_unitario) }}</p>
-                <p>Total: ${{ formatPrice(item.total) }}</p>
+                <p>Precio unitario: {{ formatPrice(item.precio_unitario) }}</p>
+                <p>Total: {{ formatPrice(item.total) }}</p>
+
                 <button @click="eliminarItem(item.evento_id, item.categoria)" class="delete-btn">
                   🗑️ Eliminar
                 </button>
@@ -61,6 +62,15 @@ export default {
     },
   },
   methods: {
+     formatPrice(valor) {
+    
+  const num = Number(valor);
+  if (isNaN(num)) {
+    return 'Precio no disponible';
+  }
+  return 'COP ' + num.toLocaleString('en-US');},
+
+
     async fetchCarrito() {
       this.loading = true;
       try {
@@ -82,9 +92,6 @@ export default {
       } catch (error) {
         console.error('Error al eliminar el ítem:', error);
       }
-    },
-    formatPrice(price) {
-      return Number(price).toFixed(2);
     },
     getImageUrl(filename) {
       return `http://localhost:3000/uploads/${filename}`;

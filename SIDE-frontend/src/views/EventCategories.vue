@@ -20,17 +20,17 @@
           </button>
           <button
             class="filter-btn"
-            :class="{ active: activeCategory === 'música' }"
-            @click="filterByCategory('música')"
+            :class="{ active: activeCategory === 'musica' }"
+            @click="filterByCategory('musica')"
           >
             Música
           </button>
           <button
             class="filter-btn"
-            :class="{ active: activeCategory === 'deportes' }"
-            @click="filterByCategory('deportes')"
+            :class="{ active: activeCategory === 'entretenimiento' }"
+            @click="filterByCategory('entretenimiento')"
           >
-            Deportes
+            Entretenimiento
           </button>
           <button
             class="filter-btn"
@@ -39,7 +39,14 @@
           >
             Arte
           </button>
-          </div>
+          <button
+            class="filter-btn"
+            :class="{ active: activeCategory === 'teatro' }"
+            @click="filterByCategory('teatro')"
+          >
+            Teatro
+          </button>
+        </div>
       </div>
 
       <div v-if="loading" class="loading-message">
@@ -81,14 +88,18 @@
               </p>
 
               <div class="event-actions">
-                <button @click.prevent="$router.push(`/detalle-evento/${evento.id}`)" class="action-button">
+                <button
+                  @click.prevent="$router.push(`/detalle-evento/${evento.id}`)"
+                  class="action-button"
+                >
                   Ver Detalles
                 </button>
                 <button
+                  v-if="userId"
                   @click.prevent="toggleFavorite(evento.id)"
                   :class="['favorite-button', { 'is-favorite': isFavorite(evento.id) }]"
                 >
-                  <i :class="['fas', isFavorite(evento.id) ? 'fa-heart' : 'fa-heart']"></i>
+                  <i :class="['fas', isFavorite(evento.id) ? 'fa-heart' : 'fa-heart-o']"></i>
                   {{ isFavorite(evento.id) ? 'En favoritos' : 'Añadir a favoritos' }}
                 </button>
               </div>
@@ -110,33 +121,33 @@ export default {
       eventos: [],
       loading: true,
       searchQuery: '',
-      activeCategory: 'all', // Para los filtros de categoría
-      favoriteEvents: [], // Para almacenar los IDs de eventos favoritos del usuario
-      userId: localStorage.getItem('userId') // Asume que tienes el userId en localStorage
+      activeCategory: 'all',
+      favoriteEvents: [],
+      userId: localStorage.getItem('userId'),
     };
   },
   computed: {
     eventosFiltrados() {
       let filtered = this.eventos;
 
-      // Filtrar por categoría
       if (this.activeCategory !== 'all') {
-        filtered = filtered.filter(evento =>
-          evento.categoria.toLowerCase() === this.activeCategory.toLowerCase()
+        filtered = filtered.filter(
+          (evento) =>
+            evento.categoria.toLowerCase() === this.activeCategory.toLowerCase()
         );
       }
 
-      // Filtrar por búsqueda
       if (this.searchQuery) {
         const query = this.searchQuery.toLowerCase();
         filtered = filtered.filter(
-          evento =>
+          (evento) =>
             evento.nombre.toLowerCase().includes(query) ||
             evento.categoria.toLowerCase().includes(query)
         );
       }
+
       return filtered;
-    }
+    },
   },
   methods: {
     async fetchEventos() {
@@ -151,60 +162,78 @@ export default {
       }
     },
     async fetchFavoriteEvents() {
-        if (!this.userId) return;
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:3000/api/favoritos/${this.userId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            this.favoriteEvents = response.data.map(fav => fav.id); // Asume que la respuesta es un array de objetos con 'id'
-        } catch (error) {
-            console.error('Error al obtener eventos favoritos:', error);
-            this.favoriteEvents = [];
-        }
+      if (!this.userId) return;
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/favoritos/${this.userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        // Mapea para obtener solo los IDs de los eventos favoritos
+        this.favoriteEvents = response.data.map(
+          (fav) => fav.evento_id ?? fav.id
+        );
+      } catch (error) {
+        console.error('Error al obtener eventos favoritos:', error);
+        this.favoriteEvents = [];
+      }
     },
     async toggleFavorite(eventoId) {
-        if (!this.userId) {
-            alert('Debes iniciar sesión para añadir a favoritos.');
-            this.$router.push('/login'); // O la ruta de tu login
-            return;
-        }
+      if (!this.userId) {
+        alert('Debes iniciar sesión para añadir a favoritos.');
+        this.$router.push({
+          path: '/login',
+          query: { redirect: this.$route.fullPath },
+        });
+        return;
+      }
 
-        const isCurrentlyFavorite = this.isFavorite(eventoId);
-        const token = localStorage.getItem('token');
+      const isCurrentlyFavorite = this.isFavorite(eventoId);
+      const token = localStorage.getItem('token');
+      if (!token) {
+  
+        this.$router.push('/login');
+        return;
+      }
 
-        try {
-            if (isCurrentlyFavorite) {
-                // Eliminar de favoritos
-                await axios.delete(`http://localhost:3000/api/favoritos/remove/${this.userId}/${eventoId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                this.favoriteEvents = this.favoriteEvents.filter(id => id !== eventoId);
-            } else {
-                // Añadir a favoritos
-                await axios.post(`http://localhost:3000/api/favoritos/add`,
-                    { usuario_id: this.userId, evento_id: eventoId },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                this.favoriteEvents.push(eventoId);
-            }
-        } catch (error) {
-            console.error('Error al actualizar favoritos:', error);
-            alert('Hubo un error al actualizar tus favoritos.');
+      try {
+        if (isCurrentlyFavorite) {
+          await axios.delete(`http://localhost:3000/api/favoritos/remove`, {
+            data: { usuario_id: this.userId, evento_id: eventoId },
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          this.favoriteEvents = this.favoriteEvents.filter((id) => id !== eventoId);
+        } else {
+          await axios.post(
+            `http://localhost:3000/api/favoritos/add`,
+            { usuario_id: this.userId, evento_id: eventoId },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          this.favoriteEvents.push(eventoId);
         }
+      } catch (error) {
+        console.error('Error al actualizar favoritos:', error);
+        alert('Hubo un error al actualizar tus favoritos.');
+      }
     },
     isFavorite(eventoId) {
-        return this.favoriteEvents.includes(eventoId);
+      return this.favoriteEvents.includes(eventoId);
     },
     getImageUrl(nombreArchivo) {
-      return nombreArchivo ? `http://localhost:3000/uploads/${nombreArchivo}` : '';
+      return nombreArchivo
+        ? `http://localhost:3000/uploads/${nombreArchivo}`
+        : '';
     },
     formatDate(fecha) {
       const date = new Date(fecha);
       return date.toLocaleDateString('es-ES', {
         day: '2-digit',
         month: 'long',
-        year: 'numeric'
+        year: 'numeric',
       });
     },
     filterByCategory(category) {
@@ -213,12 +242,12 @@ export default {
     resetFilters() {
       this.searchQuery = '';
       this.activeCategory = 'all';
-    }
+    },
   },
   mounted() {
     this.fetchEventos();
-    this.fetchFavoriteEvents(); // Carga los favoritos del usuario al iniciar
-  }
+    this.fetchFavoriteEvents();
+  },
 };
 </script>
 
@@ -233,7 +262,7 @@ export default {
   align-items: flex-start; /* Alinea arriba para que el contenido fluya */
   min-height: 100vh; /* Ocupa al menos toda la altura de la ventana */
   padding: 40px 20px; /* Padding para el contenido general */
-  background-color: #f0f2f5; /* Un color de fondo suave, en lugar de imagen */
+  background-color: #e6ecf5; /* Un color de fondo suave, en lugar de imagen */
   box-sizing: border-box;
 }
 

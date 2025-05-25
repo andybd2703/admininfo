@@ -53,7 +53,7 @@
         <div class="register-link">
           ¿No tiene una cuenta?
           <router-link to="/registro" class="register-button">
-            registrese
+            Registrese
           </router-link>
           
         </div>
@@ -77,39 +77,43 @@ export default {
     };
   },
   methods: {
-    async iniciarSesion() {
-      try {
-        // Hacemos una solicitud POST al backend con los datos del usuario
-        const response = await axios.post('http://localhost:3000/api/auth/login', {
-          email: this.usuario.email,
-          password: this.usuario.password
-        });
+  async iniciarSesion() {
+    try {
+      const response = await axios.post('http://localhost:3000/api/auth/login', {
+        email: this.usuario.email,
+        password: this.usuario.password
+      });
 
-        // Si la solicitud es exitosa, almacenamos el token en localStorage
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('usuario', response.data.usuario.username);
-        localStorage.setItem('rol', response.data.usuario.role);
-        localStorage.setItem('userId', response.data.usuario.id);
-        console.log(localStorage.getItem('userId'));
-        emitter.emit('auth-change');
-        // Limpiamos los campos del formulario
-        this.usuario = { email: '', password: '' };
+      if (response.data.twoFactorRequired) {
+        // Si el backend indica que se requiere 2FA
+        // Guarda el userId en localStorage (o Vuex, según prefieras)
+        localStorage.setItem('pending2FAUserId', response.data.userId);
+        
+        // Redirige a la página de ingreso del código 2FA
+        this.$router.push('/2fauth');
+        return;
+      }
 
-        // Redirigimos al usuario a la página principal
-        this.$router.push('/');  // Aquí está el cambio
+      // Inicio de sesión normal sin 2FA
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('usuario', response.data.usuario.username);
+      localStorage.setItem('rol', response.data.usuario.role);
+      localStorage.setItem('userId', response.data.usuario.id);
+      emitter.emit('auth-change');
+      this.usuario = { email: '', password: '' };
 
-      } catch (error) {
-        // En caso de error, mostramos un mensaje al usuario
-        if (error.response) {
-          // Si la respuesta del servidor contiene un mensaje de error
-          this.errorMessage = error.response.data.message || 'Error desconocido';
-        } else {
-          // Si no hay respuesta (puede ser un problema de conexión)
-          this.errorMessage = 'No se pudo conectar al servidor';
-        }
+      this.$router.push('/');
+
+    } catch (error) {
+      if (error.response) {
+        this.errorMessage = error.response.data.message || 'Error desconocido';
+      } else {
+        this.errorMessage = 'No se pudo conectar al servidor';
       }
     }
   }
+}
+
 };
 </script>
 
@@ -122,7 +126,7 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url('https://i.imgur.com/6IlTFsk.jpeg');
+  background-image: url('https://images.pexels.com/photos/23273/pexels-photo.jpg');
   background-size: cover;
   background-position: center;
 }

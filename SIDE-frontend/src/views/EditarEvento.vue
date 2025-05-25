@@ -24,6 +24,17 @@
             <i class="fas fa-file-image"></i> Nueva imagen seleccionada: <span class="file-name">{{ evento.imagenFile.name }}</span>
           </p>
         </div>
+        <div class="form-group">
+          <label for="categoria"><i class="fas fa-tags"></i> Categoría:</label>
+          <select id="categoria" v-model="evento.categoria_id" required>
+  <option disabled value="">Seleccione una categoría</option>
+  <option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">
+    {{ categoria.nombre }}
+  </option>
+</select>
+
+        </div>
+
 
         <div class="form-group">
           <label for="fecha"><i class="fas fa-calendar-alt"></i> Fecha:</label>
@@ -94,6 +105,12 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const eventoId = route.params.id;
+    const categorias = [
+      { id: 1, nombre: 'musica' },
+      { id: 2, nombre: 'arte' },
+      { id: 3, nombre: 'entretenimiento' },
+      { id: 4, nombre: 'teatro' }
+    ];
 
     const evento = reactive({
       nombre: '',
@@ -107,7 +124,8 @@ export default {
       precio_vip_full: 0.00,
       precio_general_full: 0.00,
       vender_comida: false,
-      vender_bebidas_alcoholicas: false
+      vender_bebidas_alcoholicas: false,
+      categoria_id: ''
     });
 
     const cargarEvento = async () => {
@@ -117,13 +135,24 @@ export default {
 
     const response = await axios.get(`http://localhost:3000/api/events/${eventoId}`, config);
     const data = response.data;
+    console.log('Datos recibidos del backend:', data);
 
+    const categoriaEncontrada = categorias.find(cat => cat.nombre === data.categoria);
+    if (categoriaEncontrada) {
+      data.categoria_id = categoriaEncontrada.id;
+    } else {
+      data.categoria_id = ''; // o null, si no existe la categoría
+    }
+    
+    
     // ⚠️ Asegúrate que la fecha sea solo 'YYYY-MM-DD' para el input
     data.fecha = data.fecha ? data.fecha.slice(0, 10) : '';
     data.vender_comida = Boolean(data.vender_comida);
     data.vender_bebidas_alcoholicas = Boolean(data.vender_bebidas_alcoholicas);
 
     Object.assign(evento, data);
+    console.log('Categoría actual del evento:', evento.categoria_id);
+
   } catch (error) {
     alert('Error al cargar el evento. Asegúrate de que el ID es correcto y tienes permisos.');
     console.error(error);
@@ -146,6 +175,7 @@ export default {
         // Envía los booleanos como 0 o 1 si tu backend lo espera así
         formData.append('vender_comida', evento.vender_comida ? 1 : 0);
         formData.append('vender_bebidas_alcoholicas', evento.vender_bebidas_alcoholicas ? 1 : 0);
+        formData.append('categoria', Number(evento.categoria_id));
 
         // 👇 Añade la imagen SOLO si el usuario subió una nueva
         if (evento.imagenFile) {
@@ -203,6 +233,7 @@ export default {
 
     return {
       evento,
+      categorias,
       editarEvento,
       formatoFecha,
       handleFileUpload,
@@ -495,4 +526,27 @@ input[type="file"] {
     font-size: 0.85rem;
   }
 }
+select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+  background-color: white;
+  appearance: none; /* para eliminar flecha default en algunos navegadores */
+  background-image: url("data:image/svg+xml,%3Csvg fill='none' height='24' stroke='%23737788' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+}
+
+select:focus {
+  border-color: #173788;
+  box-shadow: 0 0 6px #173788aa;
+  outline: none;
+}
+
 </style>
