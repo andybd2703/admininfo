@@ -18,7 +18,8 @@
           <label for="image"><i class="fas fa-image"></i> Imagen del Evento:</label>
           <input type="file" id="image" @change="handleImageUpload" required />
         </div>
-          <div class="form-group">
+
+        <div class="form-group">
           <label for="category"><i class="fas fa-tags"></i> Categoría del Evento:</label>
           <select id="category" v-model="event.category" required>
             <option disabled value="">Selecciona una categoría</option>
@@ -31,7 +32,7 @@
 
         <div class="form-group">
           <label for="date"><i class="fas fa-calendar-alt"></i> Fecha:</label>
-          <input type="date" id="date" v-model="event.date" required />
+          <input type="date" id="date" v-model="event.date" :min="today" required />
         </div>
 
         <div class="form-group">
@@ -84,7 +85,9 @@
           <i class="fas fa-paper-plane"></i> Crear Evento
         </button>
 
-        <div v-if="errorMessage" class="error-message"><i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}</div>
+        <div v-if="errorMessage" class="error-message">
+          <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
+        </div>
       </form>
     </div>
   </div>
@@ -115,7 +118,8 @@ export default {
           { question: '¿Se venderán bebidas alcohólicas?', answer: false }
         ]
       },
-      errorMessage: ''  // Mensaje de error
+      errorMessage: '',
+      today: new Date().toISOString().split("T")[0]
     };
   },
   methods: {
@@ -126,11 +130,19 @@ export default {
       }
     },
     async submitEvent() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const eventDate = new Date(this.event.date);
+      eventDate.setHours(0, 0, 0, 0);
+
+      if (eventDate <= today) {
+        this.errorMessage = 'La fecha del evento debe ser posterior al día de hoy.';
+        return;
+      }
+
       try {
         const formData = new FormData();
         const usuario_id = localStorage.getItem('userId');
-        console.log('usuario_id:', usuario_id);
-        // Agregar los datos del evento
         formData.append('nombre', this.event.name);
         formData.append('descripcion', this.event.description);
         formData.append('fecha', this.event.date);
@@ -146,25 +158,22 @@ export default {
         formData.append('categoria', this.event.category);
 
         if (this.event.image) {
-          formData.append('imagen', this.event.image); // Adjuntar la imagen
+          formData.append('imagen', this.event.image);
         }
 
-        // Realizar la petición POST al backend
-        const token = localStorage.getItem('token'); // Asumiendo que necesitas un token para esta ruta
-        const config = token ? { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` } } : { headers: { 'Content-Type': 'multipart/form-data' } };
-
+        const token = localStorage.getItem('token');
+        const config = token
+          ? { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` } }
+          : { headers: { 'Content-Type': 'multipart/form-data' } };
 
         const response = await axios.post('http://localhost:3000/api/events/crear', formData, config);
 
         console.log('Evento creado correctamente', response.data);
-        this.errorMessage = ''; // Limpiar cualquier mensaje de error previo
-        alert('¡Evento creado con éxito!'); // Mensaje de éxito
-        this.$router.push('/eventos'); // Redirigir a la página de mis eventos
-
+        this.errorMessage = '';
+        alert('¡Evento creado con éxito!');
+        this.$router.push('/eventos');
       } catch (error) {
         console.error('Error al crear el evento', error);
-
-        // Capturamos el mensaje de error específico
         if (error.response && error.response.data && error.response.data.error) {
           this.errorMessage = `Error al crear el evento: ${error.response.data.error}`;
         } else {
