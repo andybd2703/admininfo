@@ -134,7 +134,8 @@
             <input
               type="text"
               id="numeroIdentificacion"
-              v-model.trim="usuario.numeroIdentificacion"
+              v-model="usuario.numeroIdentificacion"
+              @input="soloNumeros('numeroIdentificacion')"
               class="form-control"
               placeholder="Número de identificación"
             >
@@ -148,8 +149,9 @@
               <option value="+57">+57</option>
             </select>
             <input
-              type="tel"
+              type="text"
               v-model="usuario.telefono"
+              @input="soloNumeros('telefono')"
               class="form-control phone-number"
               placeholder="Móvil"
             >
@@ -201,6 +203,10 @@ export default {
     validarPassword(password) {
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     return regex.test(password);
+  },
+
+  soloNumeros(campo) {
+    this.usuario[campo] = this.usuario[campo].replace(/\D/g, '');
   },
 
   async registrarUsuario() {
