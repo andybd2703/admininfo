@@ -197,6 +197,12 @@ export default {
     };
   },
   methods: {
+
+    validarPassword(password) {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return regex.test(password);
+  },
+
   async registrarUsuario() {
     // Verificar si los campos están completos
     if (!this.usuario.nombre || !this.usuario.email || !this.usuario.password || !this.usuario.terminos) {
@@ -208,6 +214,13 @@ export default {
       alert('Las contraseñas no coinciden.');
       return;
     }
+
+    if (!this.validarPassword(this.usuario.password)) {
+      alert('La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, una minúscula y un número.');
+      return;
+    }
+
+
 
     try {
       // Enviar la solicitud POST al backend para registrar el usuario
