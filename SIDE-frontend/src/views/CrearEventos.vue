@@ -42,7 +42,7 @@
 
         <div class="form-group">
           <label for="place"><i class="fas fa-map-marker-alt"></i> Lugar:</label>
-          <input type="text" id="place" v-model="event.place" required />
+          <input type="text" id="place" v-model="event.place" readonly />
         </div>
 
         <div class="form-group">
@@ -105,7 +105,7 @@ export default {
         image: null,
         date: '',
         time: '',
-        place: '',
+        place: 'Arena USC, Cali, Colombia',
         age_limit: 0,
         category: '',
         tickets: {
