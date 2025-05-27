@@ -147,7 +147,9 @@
           <h3 class="section-subtitle">Teléfono</h3>
           <div class="form-group phone-group">
             <select v-model="usuario.telefonoCodigo" class="form-control phone-code">
-              <option value="+57">+57</option>
+              <option v-for="codigo in codigosTelefonicos" :key="codigo.value" :value="codigo.value">
+                {{ codigo.label }}
+              </option>
             </select>
             <input
               type="text"
@@ -196,7 +198,115 @@ export default {
         telefonoCodigo: '+57',
         telefono: '',
         terminos: false
-      }
+      },
+
+      codigosTelefonicos: [
+      { value: '+1', label: '+1 Canadá' },
+  { value: '+1', label: '+1 Estados Unidos' },
+  { value: '+1-340', label: '+1-340 Islas Vírgenes de EE.UU.' },
+  { value: '+1-670', label: '+1-670 Islas Marianas del Norte' },
+  { value: '+1-671', label: '+1-671 Guam' },
+  { value: '+1-684', label: '+1-684 Samoa Americana' },
+  { value: '+1-787', label: '+1-787 Puerto Rico' },
+  { value: '+1-939', label: '+1-939 Puerto Rico' },
+  { value: '+1-441', label: '+1-441 Bermudas' },
+  { value: '+299', label: '+299 Groenlandia' },
+  { value: '+508', label: '+508 San Pedro y Miquelón' },
+  { value: '+52', label: '+52 México' },
+
+  // Islas del Caribe
+  { value: '+1-242', label: '+1-242 Bahamas' },
+  { value: '+1-246', label: '+1-246 Barbados' },
+  { value: '+1-264', label: '+1-264 Anguila' },
+  { value: '+1-268', label: '+1-268 Antigua y Barbuda' },
+  { value: '+1-284', label: '+1-284 Islas Vírgenes Británicas' },
+  { value: '+1-345', label: '+1-345 Islas Caimán' },
+  { value: '+1-473', label: '+1-473 Granada' },
+  { value: '+1-649', label: '+1-649 Islas Turcas y Caicos' },
+  { value: '+1-664', label: '+1-664 Montserrat' },
+  { value: '+1-721', label: '+1-721 San Martín' },
+  { value: '+1-758', label: '+1-758 Santa Lucía' },
+  { value: '+1-767', label: '+1-767 Dominica' },
+  { value: '+1-784', label: '+1-784 San Vicente y las Granadinas' },
+  { value: '+1-809', label: '+1-809 República Dominicana' },
+  { value: '+1-829', label: '+1-829 República Dominicana' },
+  { value: '+1-849', label: '+1-849 República Dominicana' },
+  { value: '+1-868', label: '+1-868 Trinidad y Tobago' },
+  { value: '+1-869', label: '+1-869 San Cristóbal y Nieves' },
+  { value: '+1-876', label: '+1-876 Jamaica' },
+  { value: '+1-658', label: '+1-658 Jamaica' },
+  { value: '+297', label: '+297 Aruba' },
+  { value: '+509', label: '+509 Haití' },
+  { value: '+53', label: '+53 Cuba' },
+  { value: '+590', label: '+590 Guadalupe, San Martín y San Bartolomé' },
+  { value: '+596', label: '+596 Martinica' },
+  { value: '+599', label: '+599 Curazao, Bonaire, San Eustaquio y Saba' },
+
+  // América Central
+  { value: '+501', label: '+501 Belice' },
+  { value: '+502', label: '+502 Guatemala' },
+  { value: '+503', label: '+503 El Salvador' },
+  { value: '+504', label: '+504 Honduras' },
+  { value: '+505', label: '+505 Nicaragua' },
+  { value: '+506', label: '+506 Costa Rica' },
+  { value: '+507', label: '+507 Panamá' },
+
+  // América del Sur
+  { value: '+500', label: '+500 Islas Malvinas e Islas Georgias del Sur' },
+  { value: '+51', label: '+51 Perú' },
+  { value: '+54', label: '+54 Argentina' },
+  { value: '+55', label: '+55 Brasil' },
+  { value: '+56', label: '+56 Chile' },
+  { value: '+57', label: '+57 Colombia' },
+  { value: '+58', label: '+58 Venezuela' },
+  { value: '+591', label: '+591 Bolivia' },
+  { value: '+592', label: '+592 Guyana' },
+  { value: '+593', label: '+593 Ecuador' },
+  { value: '+594', label: '+594 Guayana Francesa' },
+  { value: '+595', label: '+595 Paraguay' },
+  { value: '+597', label: '+597 Surinam' },
+  { value: '+598', label: '+598 Uruguay' },
+
+  // África (solo algunos para ejemplo)
+  { value: '+20', label: '+20 Egipto' },
+  { value: '+211', label: '+211 Sudán del Sur' },
+  { value: '+212', label: '+212 Marruecos' },
+  { value: '+213', label: '+213 Argelia' },
+  { value: '+216', label: '+216 Túnez' },
+  { value: '+218', label: '+218 Libia' },
+  { value: '+220', label: '+220 Gambia' },
+  { value: '+221', label: '+221 Senegal' },
+  { value: '+222', label: '+222 Mauritania' },
+  { value: '+223', label: '+223 Mali' },
+  { value: '+224', label: '+224 Guinea' },
+
+  // Europa (solo algunos)
+  { value: '+30', label: '+30 Grecia' },
+  { value: '+31', label: '+31 Países Bajos' },
+  { value: '+32', label: '+32 Bélgica' },
+  { value: '+33', label: '+33 Francia' },
+  { value: '+34', label: '+34 España' },
+  { value: '+39', label: '+39 Italia' },
+  { value: '+44', label: '+44 Reino Unido' },
+  { value: '+49', label: '+49 Alemania' },
+  { value: '+7', label: '+7 Rusia / Kazajistán' },
+
+  // Asia (solo algunos)
+  { value: '+81', label: '+81 Japón' },
+  { value: '+82', label: '+82 Corea del Sur' },
+  { value: '+84', label: '+84 Vietnam' },
+  { value: '+86', label: '+86 China' },
+  { value: '+90', label: '+90 Turquía' },
+  { value: '+91', label: '+91 India' },
+
+  // Oceanía
+  { value: '+60', label: '+60 Malasia' },
+  { value: '+61', label: '+61 Australia' },
+  { value: '+62', label: '+62 Indonesia' },
+  { value: '+63', label: '+63 Filipinas' },
+  { value: '+64', label: '+64 Nueva Zelanda' },
+  { value: '+65', label: '+65 Singapur' }
+    ]
     };
   },
   computed: {
