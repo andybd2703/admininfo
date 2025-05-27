@@ -126,6 +126,7 @@
               id="fechaNacimiento"
               v-model="usuario.fechaNacimiento"
               class="form-control"
+              :max="fechaMaximaPermitida"
             >
           </div>
 
@@ -176,83 +177,121 @@
 </template>
 
 <script>
-import axios from 'axios';  // Importa axios para hacer la solicitud HTTP
+import axios from 'axios';
 
 export default {
   name: 'RegistroForm',
   data() {
     return {
       usuario: {
-  nombreUsuario: '', // <- nombre de usuario (username)
-  email: '',
-  confirmarEmail: '',
-  password: '',
-  confirmarPassword: '',
-  nombre: '', // <- nombre real
-  apellidos: '',
-  fechaNacimiento: '',
-  numeroIdentificacion: '',
-  telefonoCodigo: '+57',
-  telefono: '',
-  terminos: false
-}
+        nombreUsuario: '',
+        email: '',
+        confirmarEmail: '',
+        password: '',
+        confirmarPassword: '',
+        nombre: '',
+        apellidos: '',
+        fechaNacimiento: '',
+        numeroIdentificacion: '',
+        telefonoCodigo: '+57',
+        telefono: '',
+        terminos: false
+      }
     };
   },
+  computed: {
+    fechaMaximaPermitida() {
+      const hoy = new Date();
+      hoy.setFullYear(hoy.getFullYear() - 16);
+      return hoy.toISOString().split('T')[0];
+    }
+  },
   methods: {
-
     validarPassword(password) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-    return regex.test(password);
-  },
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      return regex.test(password);
+    },
 
-  soloNumeros(campo) {
-    this.usuario[campo] = this.usuario[campo].replace(/\D/g, '');
-  },
+    soloNumeros(campo) {
+      this.usuario[campo] = this.usuario[campo].replace(/\D/g, '');
+    },
 
-  async registrarUsuario() {
-    // Verificar si los campos están completos
-    if (!this.usuario.nombre || !this.usuario.email || !this.usuario.password || !this.usuario.terminos) {
-      alert('Por favor, complete todos los campos y acepte los términos.');
-      return;
-    }
+    tieneEdadMinima(fechaNacimiento) {
+      const nacimiento = new Date(fechaNacimiento);
+      const hoy = new Date();
+      const edad = hoy.getFullYear() - nacimiento.getFullYear();
+      const mes = hoy.getMonth() - nacimiento.getMonth();
+      const dia = hoy.getDate() - nacimiento.getDate();
 
-    if (this.usuario.password !== this.usuario.confirmarPassword) {
-      alert('Las contraseñas no coinciden.');
-      return;
-    }
+      if (
+        edad > 16 ||
+        (edad === 16 && (mes > 0 || (mes === 0 && dia >= 0)))
+      ) {
+        return true;
+      }
 
-    if (!this.validarPassword(this.usuario.password)) {
-      alert('La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, una minúscula y un número.');
-      return;
-    }
+      return false;
+    },
 
+    async registrarUsuario() {
+      if (!this.usuario.nombre || !this.usuario.email || !this.usuario.password || !this.usuario.terminos) {
+        alert('Por favor, complete todos los campos y acepte los términos.');
+        return;
+      }
 
+      if (this.usuario.password !== this.usuario.confirmarPassword) {
+        alert('Las contraseñas no coinciden.');
+        return;
+      }
 
-    try {
-      // Enviar la solicitud POST al backend para registrar el usuario
-      const response = await axios.post('http://localhost:3000/api/auth/register', {
-        username: this.usuario.nombreUsuario,
-        email: this.usuario.email,
-        password: this.usuario.password,
-        firstName: this.usuario.nombre,  // Usar nombre como firstName
-        lastName: this.usuario.apellidos, // Usar apellidos como lastName
-        birthdate: this.usuario.fechaNacimiento, // Enviar la fecha de nacimiento
-        idNumber: this.usuario.numeroIdentificacion, // Enviar el número de identificación
-        phoneNumber: this.usuario.telefonoCodigo + this.usuario.telefono, // Concatenar el código de país y teléfono
-        role: 'usuario'  // Asignar un rol predeterminado
-      });
+      if (!this.validarPassword(this.usuario.password)) {
+        alert('La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, una minúscula y un número.');
+        return;
+      }
 
-      // Si el registro es exitoso, mostrar mensaje y redirigir al login
-      alert(response.data.message);
-      this.$router.push('/login');  // Redirige al login después del registro
-    } catch (error) {
-      console.error('Error al registrar usuario:', error.response);
-      alert('Hubo un error al registrar el usuario');
+      if (this.usuario.email !== this.usuario.confirmarEmail) {
+        alert('Los correos no coinciden.');
+        return;
+      }
+
+      if (!this.usuario.fechaNacimiento) {
+        alert('Por favor, ingresa tu fecha de nacimiento.');
+        return;
+      }
+
+      if (!this.tieneEdadMinima(this.usuario.fechaNacimiento)) {
+        alert('Debes tener al menos 16 años para registrarte.');
+        return;
+      }
+
+      try {
+        const response = await axios.post('http://localhost:3000/api/auth/register', {
+          username: this.usuario.nombreUsuario,
+          email: this.usuario.email,
+          password: this.usuario.password,
+          firstName: this.usuario.nombre,
+          lastName: this.usuario.apellidos,
+          birthdate: this.usuario.fechaNacimiento,
+          idNumber: this.usuario.numeroIdentificacion,
+          phoneNumber: this.usuario.telefonoCodigo + this.usuario.telefono,
+          role: 'usuario'
+        });
+
+        alert(response.data.message);
+        this.$router.push('/login');
+      } catch (error) {
+        console.error('Error al registrar usuario:', error.response);
+        alert('Hubo un error al registrar el usuario');
+      }
     }
   }
-}
 };
 </script>
+
+
+
+
+
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
