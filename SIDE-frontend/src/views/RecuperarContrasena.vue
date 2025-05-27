@@ -31,22 +31,36 @@
   </template>
   
   <script>
-  export default {
-    name: 'RecuperarContrasena',
-    data() {
-      return {
-        email: ''
-      };
-    },
-    methods: {
-      enviarCorreoRecuperacion() {
-        console.log('Correo enviado a:', this.email);
-        alert(`Se ha enviado un enlace de recuperación a ${this.email}`);
+import axios from 'axios';
+
+export default {
+  name: 'RecuperarContrasena',
+  data() {
+    return {
+      email: '',
+      mensaje: ''
+    };
+  },
+  methods: {
+    async enviarCorreoRecuperacion() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/auth/recover-password', {
+          email: this.email
+        });
+
+        this.mensaje = response.data.message || 'Correo enviado con éxito';
+        alert(this.mensaje);
         this.email = '';
+      } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        this.mensaje = error.response?.data?.message || 'Error al enviar el correo';
+        alert(this.mensaje);
       }
     }
-  };
-  </script>
+  }
+};
+</script>
+
   
   <style scoped>
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');

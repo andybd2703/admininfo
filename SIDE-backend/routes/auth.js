@@ -54,24 +54,38 @@ router.post('/register', async (req, res) => {
 
 // Ruta de login
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
+
+    // Buscar usuario por email
     const user = await User.findByEmail(email);
-    if (!user) return res.status(400).json({ message: 'Usuario no encontrado' });
-
-    const isMatch = await User.comparePassword(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Contraseña incorrecta' });
-
-    if (user.two_factor_enabled) {
-      // Aquí no enviamos token todavía, el usuario debe validar código 2FA
-      return res.json({ message: '2FA requerida', twoFactorRequired: true, userId: user.id });
+    if (!user) {
+      return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
     }
 
+    // Comparar contraseña (plain vs hash)
+    const isPasswordValid = await User.comparePassword(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
+    }
+
+    // Opcional: si usas 2FA, aquí validas si está activado y qué hacer
+    // Si no, generas el token y respondes
     const token = User.generateToken(user);
-    res.json({ message: 'Inicio de sesión exitoso', token, usuario: user });
-  } catch (err) {
-    res.status(500).json({ message: 'Error al iniciar sesión', error: err.message });
+
+    res.json({
+      token,
+      usuario: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en login:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
   }
 });
 
@@ -191,4 +205,63 @@ router.post('/resend-2fa-code', async (req, res) => {
 });
 
 
+// Ruta para recuperar contraseña
+router.post('/recover-password', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ message: 'El correo es requerido' });
+
+  try {
+    const user = await User.findByEmail(email);
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+    // Generar token temporal (válido por 1 hora, por ejemplo)
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    const resetUrl = `http://localhost:8080/reset-password?token=${token}`;
+
+    // Enviar correo
+    await transporter.sendMail({
+      from: `"Tu App" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: 'Recuperación de contraseña',
+      html: `
+        <p>Hola ${user.username},</p>
+        <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+        <a href="${resetUrl}">${resetUrl}</a>
+        <p>Este enlace expirará en 1 hora.</p>
+      `,
+    });
+
+    res.json({ message: 'Correo de recuperación enviado' });
+  } catch (error) {
+    console.error('Error en /recover-password:', error);
+    res.status(500).json({ message: 'Error al procesar la recuperación', error: error.message });
+  }
+});
+
+// Ruta para actualizar la contraseña con el token
+router.post('/reset-password', async (req, res) => {
+  const { token, password } = req.body;
+
+  if (!token || !password) {
+    return res.status(400).json({ message: 'Token y nueva contraseña son requeridos' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+
+    const hashedPassword = await User.hashPassword(password);
+
+    res.json({ message: 'Contraseña actualizada correctamente' });
+  } catch (err) {
+    console.error('Error en /reset-password:', err);
+    res.status(400).json({ message: 'Token inválido o expirado' });
+  }
+});
+
+
 module.exports = router;
+

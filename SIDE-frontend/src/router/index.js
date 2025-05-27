@@ -6,7 +6,7 @@ import LoginForm from '../views/LoginForm.vue';
 import RecuperarContrasena from '../views/RecuperarContrasena.vue';
 import Cart from '../views/Cart.vue';
 import testConexion from '@/views/testConexion.vue';
-import CrearEventos from '@/views/CrearEventos.vue';
+import CrearEventos from '@/views/CrearEventos.vue';  
 import Eventos from '@/views/EventCategories.vue';
 import Admin from '../views/AdminUsuarios.vue';
 import EditarEvento from '../views/EditarEvento.vue';
@@ -18,6 +18,7 @@ import FormularioCompra from '@/views/FormularioCompra.vue';
 import TwoFactorAuth from '@/views/TwoFactorAuth.vue';
 import TerminosYCondiciones from '@/views/TerminosYCondiciones.vue';
 import PoliticaPrivacidad from '@/views/PoliticaPrivacidad.vue';
+import ResetPassword from '@/views/ResetPassword.vue';
 // Función para verificar si el usuario está autenticado
 const isAuthenticated = () => {
   return localStorage.getItem('token') !== null;
@@ -47,7 +48,8 @@ const routes = [
   { path: '/formularioCompra', component: FormularioCompra },
   { path: '/2fauth', component: TwoFactorAuth },
   { path: '/terminos-y-condiciones', component: TerminosYCondiciones },
-  { path: '/politica-privacidad', component: PoliticaPrivacidad }
+  { path: '/politica-privacidad', component: PoliticaPrivacidad },
+  { path: '/reset-password', component: ResetPassword }
 
 ];
 

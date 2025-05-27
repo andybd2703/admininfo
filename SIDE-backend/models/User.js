@@ -97,6 +97,16 @@ static async validateTwoFactorCode(userId, code) {
     return rows[0];
   }
 
+  static async updatePassword(userId, newPassword) {
+    const db = await getDB();
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const query = `UPDATE users SET password = ? WHERE id = ?`;
+    const [result] = await db.query(query, [hashedPassword, userId]);
+    return result;
+  }
+
+
+
 }
 
 module.exports = User;
