@@ -51,11 +51,3 @@ Node.js 16.x o superior Entorno de ejecución para frontend y backend
 npm 8.x o superior Gestor de paquetes
 MySQL 8.x o superior Servidor de bases de datos
 GitHub Última versión Control.
-
--> Links de Documentacion de SIDE TEAM.
-->GitDiagram
-https://gitdiagram.com/andybd2703/admininfo
-->DeepWiki
-https://deepwiki.com/andybd2703/admininfo/1-overview
-->Trello
-https://trello.com/b/VGFZEcfc/side-team
