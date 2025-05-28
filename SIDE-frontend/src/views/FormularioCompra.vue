@@ -183,6 +183,8 @@ export default {
       const data = await res.json();
       this.items = data;
       if (this.items.length === 0 && !this.error && !this.success) {
+        this.error = 'Tu carrito está vacío. Añade productos para continuar.';
+
       }
     } catch (err) {
       this.error = err.message || 'Error al cargar los productos del carrito.';

@@ -63,16 +63,24 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
     }
 
-    // Comparar contraseña (plain vs hash)
+    // Validar contraseña
     const isPasswordValid = await User.comparePassword(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
     }
 
-    // Opcional: si usas 2FA, aquí validas si está activado y qué hacer
-    // Si no, generas el token y respondes
-    const token = User.generateToken(user);
+    // Aquí validamos si tiene 2FA activado
+    if (user.two_factor_enabled) {
+      // Respondemos que debe validar 2FA, pero sin token todavía
+      return res.status(200).json({
+        twoFactorRequired: true,
+        userId: user.id,
+        message: 'Usuario con 2FA activado, debe validar código'
+      });
+    }
 
+    // Si NO tiene 2FA, generamos y enviamos token normal
+    const token = User.generateToken(user);
     res.json({
       token,
       usuario: {
