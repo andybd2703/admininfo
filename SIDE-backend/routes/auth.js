@@ -240,7 +240,6 @@ router.post('/recover-password', async (req, res) => {
   }
 });
 
-// Ruta para actualizar la contraseña con el token
 router.post('/reset-password', async (req, res) => {
   const { token, password } = req.body;
 
@@ -252,8 +251,7 @@ router.post('/reset-password', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
 
-
-    const hashedPassword = await User.hashPassword(password);
+    await User.updatePassword(userId, password); // aquí sin hash
 
     res.json({ message: 'Contraseña actualizada correctamente' });
   } catch (err) {
@@ -261,7 +259,6 @@ router.post('/reset-password', async (req, res) => {
     res.status(400).json({ message: 'Token inválido o expirado' });
   }
 });
-
 
 module.exports = router;
 

@@ -53,7 +53,7 @@ export default {
     return {
       carrito: [],
       loading: false,
-      usuario_id: localStorage.getItem('userId'), // Ajusta según el usuario logueado
+      usuario_id: localStorage.getItem('userId'), 
     };
   },
   computed: {
@@ -107,7 +107,7 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos del componente */
+
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 .cart-container {
@@ -118,8 +118,8 @@ export default {
   background-size: cover;
   background-color: #e6ecf5;
   background-position: center;
-  padding: 20px; /* Añadido para espacio en pantallas pequeñas */
-  box-sizing: border-box; /* Para que el padding no añada al width */
+  padding: 20px;
+  box-sizing: border-box; 
 }
 
 .cart-box {
@@ -128,8 +128,8 @@ export default {
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 700px; /* Ancho máximo similar al login */
-  box-sizing: border-box; /* Para que el padding no añada al width */
+  max-width: 700px; 
+  box-sizing: border-box; 
 }
 
 .cart-title {
@@ -156,10 +156,9 @@ export default {
   margin-bottom: 20px;
 }
 
-/* Color para el botón "Volver a la tienda" */
 .continue-shopping-button {
   display: inline-block;
-  background-color: #173788; /* Color deseado */
+  background-color: #173788; 
   color: white;
   padding: 12px 25px;
   border-radius: 8px;
@@ -170,7 +169,7 @@ export default {
 }
 
 .continue-shopping-button:hover {
-  background-color: #0056b3; /* Un azul más oscuro para el hover */
+  background-color: #0056b3;
 }
 
 .cart-list {
@@ -181,11 +180,11 @@ export default {
 
 .cart-item {
   display: flex;
-  align-items: center; /* Alinea los ítems verticalmente */
-  gap: 20px; /* Espacio entre imagen y texto */
-  margin-bottom: 30px; /* Más espacio entre ítems */
+  align-items: center; 
+  gap: 20px; 
+  margin-bottom: 30px; 
   padding-bottom: 30px;
-  border-bottom: 1px solid #e0e0e0; /* Línea más suave */
+  border-bottom: 1px solid #e0e0e0; 
 }
 
 .cart-item:last-child {

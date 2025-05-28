@@ -105,18 +105,20 @@ export default {
 
 <style scoped>
 .reset-container {
-  display: flex;
+ display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f5f5f5;
-}
+  background-image: url('https://images.unsplash.com/photo-1542866263-77e2cdc46889?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;}
 
 .reset-box {
   background-color: white;
   padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  box-shadow
+  : 0 0 12px rgba(0, 0, 0, 0.1);
   width: 420px;
 }
 

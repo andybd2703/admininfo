@@ -96,7 +96,7 @@ export default {
     const router = useRouter()
 
     const mostrarNavbar = computed(() => {
-      return !['/registro', '/login', '/recuperar-contrasena','/2fauth'].includes(route.path)
+      return !['/registro', '/login','/reset-password', '/recuperar-contrasena','/2fauth'].includes(route.path)
     })
 
     const nombreUsuario = ref(null)

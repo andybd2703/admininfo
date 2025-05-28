@@ -88,7 +88,7 @@ export default {
       loading: false,
       error: '',
       success: false,
-      usuario_id: localStorage.getItem('userId'), // ID usuario
+      usuario_id: localStorage.getItem('userId'),  
     }
   },
   computed: {
@@ -116,9 +116,8 @@ export default {
       this.loading = true;
 
       try {
-        const username = localStorage.getItem('usuario'); // o el nombre que tengas
-        const token = localStorage.getItem('token'); // Obtener el token del localStorage
-
+        const username = localStorage.getItem('usuario'); 
+        const token = localStorage.getItem('token'); 
         const orderData = {
           username,
           items: this.items,
@@ -130,7 +129,7 @@ export default {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Incluir el token en los headers
+            'Authorization': `Bearer ${token}` 
           },
           body: JSON.stringify(orderData)
         });
@@ -162,10 +161,8 @@ export default {
         window.URL.revokeObjectURL(url);
 
         this.success = true;
-        // Opcional: Limpiar el carrito después de una compra exitosa
-        // Si tu backend tiene un endpoint para esto:
-        // await fetch(`http://localhost:3000/api/carrito/${this.usuario_id}`, { method: 'DELETE' });
-        this.items = []; // Limpiar el carrito localmente
+       
+        this.items = [];
       } catch (err) {
         this.error = err.message || 'Error inesperado al procesar la compra.';
       } finally {
@@ -175,7 +172,7 @@ export default {
   },
   async mounted() {
     try {
-      const token = localStorage.getItem('token'); // Obtener el token del localStorage
+      const token = localStorage.getItem('token'); 
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
       const res = await fetch(`http://localhost:3000/api/carrito/${this.usuario_id}`, { headers });
@@ -185,13 +182,11 @@ export default {
       }
       const data = await res.json();
       this.items = data;
-      // Redirigir si el carrito está vacío al cargar la página y no hay mensaje previo
       if (this.items.length === 0 && !this.error && !this.success) {
-        // this.$router.push('/eventos'); // O a la página de inicio
       }
     } catch (err) {
       this.error = err.message || 'Error al cargar los productos del carrito.';
-      this.items = []; // Asegurarse de que no haya items si hay un error
+      this.items = [];
     }
   }
 }

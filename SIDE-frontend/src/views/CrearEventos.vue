@@ -186,23 +186,21 @@ export default {
 </script>
 
 <style scoped>
-/* Importa Font Awesome para los íconos */
+
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
-/* Contenedor principal de la página, replicando el fondo suave */
 .form-page-wrapper {
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Alinea arriba para que el contenido fluya */
-  min-height: 100vh; /* Ocupa al menos toda la altura de la ventana */
-  padding: 40px 20px; /* Padding para el contenido general */
-  background-color: #f0f2f5; /* Un color de fondo suave */
+  align-items: flex-start; 
+  min-height: 100vh; 
+  padding: 40px 20px; 
+  background-color: #f0f2f5; 
   box-sizing: border-box;
 }
 
-/* Caja principal que contiene el formulario */
 .form-main-box {
-  background-color: rgba(255, 255, 255, 0.95); /* Blanco semitransparente para la caja */
+  background-color: rgba(255, 255, 255, 0.95); 
   padding: 50px;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Sombra más sutil */

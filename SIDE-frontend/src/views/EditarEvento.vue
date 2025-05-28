@@ -115,8 +115,8 @@ export default {
     const evento = reactive({
       nombre: '',
       descripcion: '',
-      imagen: '', // La imagen actual del evento (nombre del archivo)
-      imagenFile: null, // La nueva imagen seleccionada por el usuario (objeto File)
+      imagen: '', 
+      imagenFile: null, 
       fecha: '',
       hora: '',
       edad_minima: 0,
@@ -141,11 +141,10 @@ export default {
     if (categoriaEncontrada) {
       data.categoria_id = categoriaEncontrada.id;
     } else {
-      data.categoria_id = ''; // o null, si no existe la categoría
+      data.categoria_id = ''; 
     }
     
     
-    // ⚠️ Asegúrate que la fecha sea solo 'YYYY-MM-DD' para el input
     data.fecha = data.fecha ? data.fecha.slice(0, 10) : '';
     data.vender_comida = Boolean(data.vender_comida);
     data.vender_bebidas_alcoholicas = Boolean(data.vender_bebidas_alcoholicas);
@@ -156,7 +155,7 @@ export default {
   } catch (error) {
     alert('Error al cargar el evento. Asegúrate de que el ID es correcto y tienes permisos.');
     console.error(error);
-    router.push('/mis-eventos');
+    router.push('/organizador-home');
   }
 };
 
@@ -172,26 +171,23 @@ export default {
         formData.append('precio_platino_full', evento.precio_platino_full);
         formData.append('precio_vip_full', evento.precio_vip_full);
         formData.append('precio_general_full', evento.precio_general_full);
-        // Envía los booleanos como 0 o 1 si tu backend lo espera así
         formData.append('vender_comida', evento.vender_comida ? 1 : 0);
         formData.append('vender_bebidas_alcoholicas', evento.vender_bebidas_alcoholicas ? 1 : 0);
         formData.append('categoria', Number(evento.categoria_id));
 
-        // 👇 Añade la imagen SOLO si el usuario subió una nueva
         if (evento.imagenFile) {
           formData.append('imagen', evento.imagenFile);
         }
-        // No enviamos 'imagen' si no hay una nueva y no queremos tocar la existente
-        // El backend debe manejar si 'imagen' está ausente o es un nombre de archivo viejo si no se provee un nuevo file.
 
-        const token = localStorage.getItem('token'); // Asumiendo que necesitas un token para esta ruta
+
+        const token = localStorage.getItem('token'); 
         const config = token ? { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` } } : { headers: { 'Content-Type': 'multipart/form-data' } };
 
 
         await axios.put(`http://localhost:3000/api/events/${eventoId}`, formData, config);
 
         alert('¡Evento actualizado correctamente!');
-        router.go(-1); // Volver a la página anterior (Mis Eventos)
+        router.go(-1);
       } catch (error) {
         alert('Error al actualizar el evento. Revisa los datos e intenta de nuevo.');
         console.error(error);
@@ -207,8 +203,7 @@ export default {
 
     const formatoFecha = (fechaStr) => {
       if (!fechaStr) return '';
-      // Formatear la fecha para que el input type="date" la reconozca
-      // Si la fecha viene como 'YYYY-MM-DDTHH:mm:ss.sssZ' (ISO string), 'slice(0, 10)' funciona bien
+
       return fechaStr.slice(0, 10);
     };
 
@@ -217,12 +212,12 @@ export default {
       if (!confirmar) return;
 
       try {
-        const token = localStorage.getItem('token'); // Asumiendo que necesitas un token para esta ruta
+        const token = localStorage.getItem('token'); 
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
         await axios.delete(`http://localhost:3000/api/events/${eventoId}`, config);
         alert('¡Evento eliminado correctamente!');
-        router.push('/mis-eventos'); // Redirigir a la página de mis eventos
+        router.push('/organizador-home'); 
       } catch (error) {
         alert('Error al eliminar el evento. Intenta de nuevo.');
         console.error(error);
@@ -244,10 +239,8 @@ export default {
 </script>
 
 <style scoped>
-/* Importa Font Awesome para los íconos */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
-/* Contenedor principal de la página, replicando el fondo suave */
 .form-page-wrapper {
   display: flex;
   justify-content: center;

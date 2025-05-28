@@ -173,7 +173,6 @@ export default {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        // Mapea para obtener solo los IDs de los eventos favoritos
         this.favoriteEvents = response.data.map(
           (fav) => fav.evento_id ?? fav.id
         );

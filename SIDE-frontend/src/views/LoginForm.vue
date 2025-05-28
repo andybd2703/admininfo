@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import axios from 'axios'; // Importamos axios para las solicitudes HTTP
+import axios from 'axios';  
 import emitter from '@/eventBus';
 export default {
   name: 'LoginForm',
@@ -79,7 +79,7 @@ export default {
         email: '',
         password: ''
       },
-      errorMessage: '' // Variable para almacenar mensajes de error
+      errorMessage: '' 
     };
   },
   methods: {
@@ -91,16 +91,13 @@ export default {
       });
 
       if (response.data.twoFactorRequired) {
-        // Si el backend indica que se requiere 2FA
-        // Guarda el userId en localStorage (o Vuex, según prefieras)
+       
         localStorage.setItem('pending2FAUserId', response.data.userId);
         
-        // Redirige a la página de ingreso del código 2FA
         this.$router.push('/2fauth');
         return;
       }
 
-      // Inicio de sesión normal sin 2FA
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('usuario', response.data.usuario.username);
       localStorage.setItem('rol', response.data.usuario.role);
@@ -131,7 +128,6 @@ export default {
   height: 100vh;
 }
 
-/* Fondo a la izquierda */
 .background-side {
   flex: 1;
   background-image: url('https://images.unsplash.com/photo-1542866263-77e2cdc46889?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');

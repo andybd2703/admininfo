@@ -109,8 +109,8 @@ export default {
   data() {
     return {
       evento: {},
-      esFavorito: false, // nuevo estado
-      carrito: []        // nuevo estado
+      esFavorito: false, 
+      carrito: []       
     };
   },
   computed: {
@@ -126,7 +126,7 @@ export default {
       date.setHours(parseInt(hora), parseInt(minuto));
       return format(date, 'hh:mm a', { locale: es });
     },
-  },  // <-- Esta coma es importantísima para que no dé error
+  },  
   created() {
     const eventoId = this.$route.params.id;
     this.obtenerEvento(eventoId);
@@ -142,7 +142,6 @@ export default {
         this.evento = response.data;
         console.log(" Evento cargado:", this.evento);
 
-        // 👇 Llamamos a verificarFavorito solo después de tener el evento
         this.verificarFavorito();
       } catch (error) {
         console.error(" Error al obtener el evento:", error);

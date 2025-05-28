@@ -61,7 +61,6 @@ export default {
           return console.error("No se encontró el ID del organizador.");
         }
 
-        // Asumiendo que esta ruta podría necesitar un token, si es una ruta protegida
         const token = localStorage.getItem('token');
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
@@ -69,8 +68,7 @@ export default {
         this.eventos = response.data;
       } catch (error) {
         console.error('Error al obtener los eventos del organizador:', error);
-        // Podrías añadir un mensaje al usuario aquí, por ejemplo:
-        // alert('Hubo un error al cargar tus eventos. Inténtalo de nuevo más tarde.');
+
       }
     },
     getImageUrl(nombreArchivo) {

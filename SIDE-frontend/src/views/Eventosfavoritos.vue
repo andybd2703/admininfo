@@ -67,13 +67,12 @@
 import axios from 'axios';
 
 export default {
-  name: 'EventsCategories', // El nombre original, aunque ahora cargue favoritos
+  name: 'EventsCategories', 
   data() {
     return {
       eventos: [],
       loading: true,
-      searchQuery: '', // Para la funcionalidad de búsqueda
-      // Puedes añadir más data para filtros si los necesitas
+      searchQuery: '', 
     };
   },
   computed: {
@@ -105,13 +104,11 @@ export default {
         this.eventos = response.data;
       } catch (error) {
         console.error('Error al obtener los eventos favoritos:', error);
-        // Manejo de errores visual aquí si es necesario
       } finally {
         this.loading = false;
       }
     },
     async eliminarDeFavoritos(eventoId) {
-      // Previene la navegación al hacer clic en el botón dentro del router-link
       event.stopPropagation();
       event.preventDefault();
 
@@ -121,12 +118,9 @@ export default {
         await axios.delete(`http://localhost:3000/api/favoritos/remove`, {
             data: { usuario_id: usuario_id, evento_id: eventoId }
           });
-        // Actualiza la lista de eventos después de eliminar
         this.eventos = this.eventos.filter(evento => evento.id !== eventoId);
-        // Opcional: mostrar un mensaje de éxito al usuario
       } catch (error) {
         console.error('Error al eliminar de favoritos:', error);
-        // Manejo de errores visual
       }
     },
     getImageUrl(nombreArchivo) {
@@ -140,7 +134,7 @@ export default {
         year: 'numeric'
       });
     },
-    formatPrice(price) { // Función para formato de precio si añades precios
+    formatPrice(price) { 
       return Number(price).toFixed(2);
     }
   },

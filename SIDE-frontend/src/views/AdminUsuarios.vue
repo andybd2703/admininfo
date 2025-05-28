@@ -82,7 +82,7 @@ export default {
   data() {
     return {
       usuarios: [],
-      usuarioEdicion: null, // Usuario que está siendo editado
+      usuarioEdicion: null,
     };
   },
   methods: {
@@ -113,7 +113,7 @@ export default {
       }
     },
     abrirFormularioEdicion(usuario) {
-      this.usuarioEdicion = { ...usuario }; // Copiar los datos del usuario a editar
+      this.usuarioEdicion = { ...usuario }; 
     },
     async guardarEdicion() {
   try {
@@ -121,7 +121,7 @@ export default {
 
     await axios.put(
       `http://localhost:3000/api/usuarios/${this.usuarioEdicion.id}`,
-      this.usuarioEdicion, //  Aquí van los datos a guardar
+      this.usuarioEdicion, 
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -130,13 +130,13 @@ export default {
       }
     );
 
-    // Actualizar el usuario en la lista
+   
     const index = this.usuarios.findIndex(u => u.id === this.usuarioEdicion.id);
     if (index !== -1) {
       this.usuarios.splice(index, 1, this.usuarioEdicion);
     }
 
-    this.usuarioEdicion = null; // Limpiar el formulario después de guardar
+    this.usuarioEdicion = null; 
 
   } catch (error) {
     console.error('Error al guardar la edición:', error);
@@ -144,7 +144,7 @@ export default {
   }
 },
     cancelarEdicion() {
-      this.usuarioEdicion = null; // Limpiar el formulario de edición
+      this.usuarioEdicion = null;
     }
   },
   mounted() {
@@ -161,7 +161,7 @@ th, td {
   text-align: left;
 }
 .btn-editar {
-  background-color: #3b82f6; /* azul */
+  background-color: #3b82f6; 
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 0.375rem;
@@ -171,12 +171,11 @@ th, td {
 }
 
 .btn-editar:hover {
-  background-color: #2563eb; /* azul oscuro */
+  background-color: #2563eb; 
 }
 
 .btn-eliminar {
-  background-color: #ef4444; /* rojo */
-  color: white;
+  background-color: #ef4444; 
   padding: 0.25rem 0.75rem;
   border-radius: 0.375rem;
   border: none;
@@ -185,6 +184,6 @@ th, td {
 }
 
 .btn-eliminar:hover {
-  background-color: #dc2626; /* rojo oscuro */
+  background-color: #dc2626; 
 }
 </style>

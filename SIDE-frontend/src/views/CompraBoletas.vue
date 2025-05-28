@@ -274,12 +274,11 @@ formatCurrency(valor) {
   text-align: center;
 }
 
-/*DESCRIPCION EVENTO*/
 .quick-info {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
-  color: #0332cd; /* color morado suave */
+  color: #0332cd;
   font-weight: 600;
   font-size: 1.1rem;
   margin-top: 1.5rem;
