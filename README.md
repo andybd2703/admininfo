@@ -43,7 +43,7 @@ El backend de Express.js expone API RESTful organizadas por dominio funcional:
 
 Para obtener información sobre la arquitectura general del sistema y la pila tecnológica, consulte Arquitectura del sistema. Para obtener documentación detallada de la API necesaria durante el desarrollo, consulte la Referencia de la API.
 
-->Prerrequisitos
+->Pre requisitos
 Antes de configurar la plataforma SIDE, asegúrese de tener instalados los siguientes componentes en su equipo de desarrollo:
 
 Requisito Versión Propósito
